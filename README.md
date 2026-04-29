@@ -1,17 +1,15 @@
-# SF Inmobiliaria (Vite + React + TypeScript + Tailwind)
+# SF Inmobiliaria Platform
 
-## Requisitos
-- Node.js 18.18+ (recomendado: Node 20 LTS)
-- npm 9+
-
-## Ejecutar
+## Frontend
 ```bash
 npm install
 npm run dev
 ```
 
-## Build
+## Backend (Express + MongoDB)
 ```bash
-npm run build
-npm run preview
+cd server
+npm install
+npm run dev
 ```
+API base: `http://localhost:4000/api`
