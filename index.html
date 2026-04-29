@@ -3,40 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SportPro v2 Premium</title>
+  <title>SportHub Elite v3</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="nav glass">
-    <h1>SportPro v2</h1>
-    <input id="q" placeholder="Buscar producto..." />
-    <select id="cat"></select>
-    <select id="price"><option value="all">Precio</option><option value="low">< 100000</option><option value="mid">100k-150k</option><option value="high">>150k</option></select>
-    <label><input type="checkbox" id="onlyOffers"> Ofertas</label>
-    <label><input type="checkbox" id="onlyFav"> Favoritos</label>
-    <button id="authBtn">Login</button>
-    <button id="wishBtn">❤</button>
-    <button id="cartBtn">🛒 <span id="cartCount">0</span></button>
+  <header class="top">
+    <div class="logo">SportHub <span>Elite</span></div>
+    <input id="search" placeholder="Buscar productos..." />
+    <select id="filterCat"></select>
+    <button id="openCart">Carrito <b id="cartQty">0</b></button>
   </header>
 
-  <section class="hero reveal"><h2>Ecommerce Deportivo Premium</h2><p>Santa Fe · Envíos a todo el país</p></section>
+  <section class="hero reveal"><h1>Ecommerce Deportivo Premium</h1><p>UI renovada, datos curados y lógica robusta.</p></section>
+
   <main>
-    <section id="state"></section>
-    <section id="products" class="grid"></section>
-    <section id="favorites" class="panel"><h3>Mis favoritos</h3><div id="favGrid" class="grid"></div></section>
-    <section id="analytics" class="panel"><h3>Analytics</h3><div id="analyticsBox"></div></section>
-    <section id="admin" class="panel"></section>
+    <section class="toolbar reveal">
+      <label><input type="checkbox" id="onlyDeals"> Solo ofertas</label>
+      <input id="couponInput" placeholder="Cupón" />
+      <button id="applyCoupon">Aplicar cupón</button>
+      <span id="couponMsg"></span>
+    </section>
+
+    <section id="catalog" class="catalog"></section>
+    <section id="adminRoot" class="panel reveal"></section>
   </main>
 
-  <aside id="cart" class="sidebar"><h3>Carrito</h3><div id="cartItems"></div><input id="coupon" placeholder="Cupón"/><button id="applyCoupon">Aplicar</button><p id="couponMsg"></p><strong id="total"></strong><a id="wa" target="_blank">Finalizar por WhatsApp</a></aside>
-  <footer class="glass"><div><h4>Quiénes somos</h4><p>Tienda deportiva premium con atención real.</p></div><div><h4>Ubicación</h4><p>Av. General López 2450, Santa Fe</p><p>Lun-Sáb 9 a 18</p></div><div><h4>Contacto</h4><p>+54 342 555-0198</p><p>ventas@sportpro.com.ar</p></div><iframe src="https://www.google.com/maps?q=Santa+Fe+Argentina&output=embed" loading="lazy"></iframe></footer>
+  <aside id="cart" class="cart"><h3>Tu carrito</h3><div id="cartList"></div><p id="cartTotal"></p><a id="waLink" target="_blank">Finalizar por WhatsApp</a></aside>
+
+  <footer class="footer">
+    <article><h4>Quiénes somos</h4><p>Tienda premium de indumentaria y fútbol en Santa Fe.</p></article>
+    <article><h4>Ubicación</h4><p>Av. General López 2450 · Santa Fe</p><p>Lunes a Sábado 9 a 18</p></article>
+    <article><h4>Contacto</h4><p>+54 342 555-0198</p><p>ventas@sporthubelite.com</p></article>
+    <iframe src="https://www.google.com/maps?q=Santa+Fe+Argentina&output=embed" loading="lazy"></iframe>
+  </footer>
 
   <div id="toast"></div>
+
   <script src="data.js"></script>
   <script src="auth.js"></script>
-  <script src="cart.js"></script>
-  <script src="coupons.js"></script>
   <script src="discounts.js"></script>
+  <script src="coupons.js"></script>
+  <script src="cart.js"></script>
   <script src="wishlist.js"></script>
   <script src="analytics.js"></script>
   <script src="admin.js"></script>

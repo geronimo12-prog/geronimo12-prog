@@ -1,39 +1,22 @@
 window.addEventListener('error',e=>console.error('JS ERROR',e.message));
-let catalog=(Admin.load()||[]).filter(p=>validateProduct(p)).map(p=>({...p,image:p.img})), coupon=null;
+let catalog=Admin.load().filter(isValidProduct); let activeCoupon=null;
 const $=s=>document.querySelector(s); const fmt=n=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n);
 
-function fuzzy(text,q){q=q.toLowerCase();text=text.toLowerCase();if(text.includes(q))return true;return q.split('').every(ch=>text.includes(ch));}
-function filtered(){
-  const q=$('#q').value||''; const cat=$('#cat').value; const pr=$('#price').value; const onlyO=$('#onlyOffers').checked; const onlyF=$('#onlyFav').checked;
-  return catalog.filter(p=>{
-    if(cat!=='todas'&&p.category!==cat)return false;
-    if(pr==='low'&&p.price>=100000)return false; if(pr==='mid'&&(p.price<100000||p.price>150000))return false; if(pr==='high'&&p.price<=150000)return false;
-    if(onlyF&&!Wishlist.has(p.id))return false;
-    const final=Discounts.final(p,coupon); if(onlyO&&final>=p.price)return false;
-    return fuzzy(`${p.name} ${p.description}`,q);
-  });
-}
-function render(){
-  const list=filtered(); const box=$('#products');
-  if(!list.length){box.innerHTML='<div class="panel">Sin resultados o productos inválidos filtrados por seguridad.</div>';return;}
-  box.innerHTML=list.map((p,i)=>{const fp=Discounts.final(p,coupon); const off=fp<p.price?`<span class='badge'>-${Math.round((1-fp/p.price)*100)}% OFF</span>`:'';Analytics.hit(p.id,'v');
-    return `<article class='card' style='animation-delay:${i*40}ms'><img loading='lazy' src='${p.image}' alt='${p.name}'><div class='b'><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p>${off}<p><strong>Nuestro: ${fmt(fp)}</strong> <br><s>Referencia: ${fmt(p.referencePrice||p.price)}</s></p><button data-a='${p.id}'>Agregar</button><button data-w='${p.id}'>${Wishlist.has(p.id)?'Quitar ❤':'❤ Favorito'}</button></div></article>`}).join('');
-  document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const p=catalog.find(x=>x.id===b.dataset.a);Cart.add(p);Analytics.hit(p.id,'a');renderCart();toast('Agregado al carrito');});
-  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{Wishlist.toggle(b.dataset.w);render();renderFav();});
-  renderFav(); renderOffers(); renderAnalytics();
-}
-function renderFav(){const fav=catalog.filter(p=>Wishlist.has(p.id));$('#favGrid').innerHTML=fav.map(p=>`<article class='card'><img src='${p.image}' alt='${p.name}'><div class='b'>${p.name}</div></article>`).join('')||'<p>Sin favoritos</p>';}
-function renderOffers(){const offers=catalog.filter(p=>Discounts.final(p,coupon)<p.price);document.getElementById('state').innerHTML=`<div class='panel'>Ofertas activas: ${offers.length}</div>`;}
-function renderAnalytics(){const top=Analytics.top();$('#analyticsBox').innerHTML=top.map(([id,v])=>`<p>${id}: vistas ${v.v} · agregados ${v.a}</p>`).join('')||'<p>Sin datos aún</p>';}
-function renderCart(){const c=Cart.data;$('#cartCount').textContent=c.reduce((a,i)=>a+i.qty,0);$('#cartItems').innerHTML=c.map(i=>`<div class='panel'><b>${i.name}</b><p>${fmt(Discounts.final(i,coupon))}</p><input data-q='${i.id}' type='number' min='1' value='${i.qty}'><button data-r='${i.id}'>Eliminar</button></div>`).join('')||'<p>Carrito vacío</p>';
-  document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{Cart.rm(b.dataset.r);renderCart();});
-  document.querySelectorAll('[data-q]').forEach(i=>i.onchange=()=>{Cart.qty(i.dataset.q,Number(i.value));renderCart();});
-  const total=Cart.total(coupon);$('#total').textContent=`Total: ${fmt(total)}`; const lines=c.map(i=>`- ${i.name} x${i.qty}`).join('%0A');$('#wa').href=`https://wa.me/5493425550198?text=Hola%20quiero%20comprar:%0A${lines}%0ATotal:%20${total}`;
-}
-function initAuth(){const s=Auth.session();$('#authBtn').textContent=s?`Salir (${s.name})`:'Login';$('#authBtn').onclick=()=>{if(Auth.session()){Auth.logout();location.reload();return;}const t=prompt('login/register');const e=prompt('email');const p=prompt('pass');if(t==='register'){const n=prompt('nombre');Auth.register(n,e,p)?toast('Registrado'):toast('Error');}else{Auth.login(e,p)?toast('Login OK'):toast('Credenciales inválidas');}setTimeout(()=>location.reload(),300);};}
-function initAdmin(){const s=Auth.session();if(!s||s.role!=='admin')return $('#admin').innerHTML='';$('#admin').innerHTML=`<h3>Admin</h3><form id='af'><input id='an' placeholder='Nombre' required><input id='ap' type='number' placeholder='Precio' required><select id='ac'><option>camisetas</option><option>botines</option><option>pelotas</option><option>shorts</option></select><input id='ai' placeholder='Imagen URL' required><input id='ad' placeholder='Descripción' required><button>Guardar</button></form>`;
-$('#af').onsubmit=e=>{e.preventDefault();const p={id:'x'+Date.now(),name:an.value,price:Number(ap.value),category:ac.value,image:ai.value,description:ad.value};if(!Admin.valid(p))return toast('Datos inválidos');catalog.push(p);Admin.save(catalog);render();toast('Producto guardado');};}
+function finalPrice(p){let v=Discounts.apply(p); if(activeCoupon?.type==='all')v=Math.round(v*.9); if(activeCoupon?.type==='river'&&p.team==='river')v=Math.round(v*.85); if(activeCoupon?.type==='first')v=Math.round(v*.8); return v;}
+function searchMatch(p,q){q=q.toLowerCase();const t=`${p.name} ${p.description}`.toLowerCase(); if(t.includes(q))return true; return q.split('').every(c=>t.includes(c));}
+function getFiltered(){const q=$('#search').value.trim();const cat=$('#filterCat').value;const onlyDeals=$('#onlyDeals').checked; return catalog.filter(p=>{if(cat!=='todas'&&p.category!==cat)return false; if(q&&!searchMatch(p,q))return false; const deal=finalPrice(p)<p.price; if(onlyDeals&&!deal)return false; return true;});}
 
-function bind(){ $('#q').oninput=render; $('#cat').onchange=render; $('#price').onchange=render; $('#onlyOffers').onchange=render; $('#onlyFav').onchange=render; $('#wishBtn').onclick=()=>document.getElementById('favorites').scrollIntoView(); $('#cartBtn').onclick=()=>$('#cart').classList.toggle('open'); $('#applyCoupon').onclick=()=>{const code=$('#coupon').value.toUpperCase(); const res=Coupons.apply(code,Cart.data,Auth.session()); $('#couponMsg').textContent=res.ok?'Cupón aplicado':'Cupón inválido'; coupon=res.ok?res.c:null; render(); renderCart();};}
+function renderCatalog(){const list=getFiltered(); const root=$('#catalog'); if(!list.length){root.innerHTML='<div class="panel">Sin resultados</div>';return;} root.innerHTML=list.map(p=>{const fp=finalPrice(p); const off=Math.round((1-fp/p.price)*100); Analytics.hit(p.id,'v'); return `<article class='card reveal'><img loading='lazy' src='${p.img}' alt='${p.name}'><div class='cbody'><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p><p class='price'>${fmt(fp)} <span class='ref'>${fmt(p.referencePrice)}</span></p><span class='off'>-${off}% OFF</span><div class='row'><button data-add='${p.id}'>Agregar</button><button data-f='${p.id}'>${Wishlist.has(p.id)?'Quitar ❤':'❤'}</button></div></div></article>`;}).join('');
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{const p=catalog.find(x=>x.id===b.dataset.add);Cart.add(p);Analytics.hit(p.id,'a');renderCart();toast('Agregado');});
+  document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{Wishlist.toggle(b.dataset.f);renderCatalog();});
+  reveal();
+}
 
-document.addEventListener('DOMContentLoaded',()=>{try{$('#cat').innerHTML=`<option value='todas'>Todas</option><option value='camisetas'>Camisetas</option><option value='botines'>Botines</option><option value='pelotas'>Pelotas</option><option value='shorts'>Shorts</option>`;initAuth();initAdmin();bind();render();renderCart();reveal();}catch(e){document.body.innerHTML='<div class="panel">Error cargando tienda. Recargá la página.</div>';console.error(e);}});
+function renderCart(){const c=Cart.items; $('#cartQty').textContent=c.reduce((a,i)=>a+i.qty,0); $('#cartList').innerHTML=c.map(i=>`<div class='panel'><b>${i.name}</b><p>${fmt(finalPrice(i))}</p><input data-q='${i.id}' type='number' value='${i.qty}' min='1'><button data-r='${i.id}'>Eliminar</button></div>`).join('')||'<p>Carrito vacío</p>'; document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{Cart.remove(b.dataset.r);renderCart();}); document.querySelectorAll('[data-q]').forEach(i=>i.onchange=()=>{Cart.setQty(i.dataset.q,Number(i.value));renderCart();}); const total=c.reduce((a,i)=>a+finalPrice(i)*i.qty,0); $('#cartTotal').textContent=`Total: ${fmt(total)}`; $('#waLink').href=`https://wa.me/5493425550198?text=${encodeURIComponent('Hola, quiero comprar:\n'+c.map(i=>`- ${i.name} x${i.qty}`).join('\n')+'\nTotal: '+fmt(total))}`;}
+
+function initAuth(){const s=Auth.session();const btn=document.createElement('button');btn.textContent=s?`Salir ${s.name}`:'Ingresar';btn.onclick=()=>{if(Auth.session()){Auth.logout();location.reload();return;}const mode=prompt('login/register');const email=prompt('email');const pass=prompt('pass');if(mode==='register'){const name=prompt('nombre');Auth.register(name,email,pass)?toast('Registrado'):toast('Error registro');}else{Auth.login(email,pass)?toast('Login ok'):toast('Credenciales inválidas');}setTimeout(()=>location.reload(),300);};document.querySelector('.top').appendChild(btn);}
+function initAdmin(){const s=Auth.session();if(!s||s.role!=='admin')return; $('#adminRoot').innerHTML=`<h3>Admin</h3><form id='af'><input id='n' placeholder='Nombre' required><input id='pr' type='number' placeholder='Precio' required><select id='ct'><option>camisetas</option><option>botines</option><option>pelotas</option><option>shorts</option></select><input id='im' placeholder='Imagen URL' required><input id='ds' placeholder='Descripción' required><button>Guardar</button></form>`; $('#af').onsubmit=e=>{e.preventDefault();const p={id:'a'+Date.now(),name:n.value,category:ct.value,price:Number(pr.value),referencePrice:Math.round(Number(pr.value)*1.12),img:im.value,description:ds.value}; if(!Admin.valid(p))return toast('Datos inválidos'); catalog.push(p); Admin.save(catalog); renderCatalog(); toast('Producto creado');};}
+
+function bind(){ $('#search').oninput=renderCatalog; $('#filterCat').onchange=renderCatalog; $('#onlyDeals').onchange=renderCatalog; $('#openCart').onclick=()=>$('#cart').classList.toggle('open'); $('#applyCoupon').onclick=()=>{const code=$('#couponInput').value.toUpperCase(); const r=Coupons.validate(code,Cart.items,Auth.session()); $('#couponMsg').textContent=r.ok?'Aplicado':'Inválido'; activeCoupon=r.ok?r.c:null; renderCatalog(); renderCart();}; }
+
+document.addEventListener('DOMContentLoaded',()=>{try{$('#filterCat').innerHTML=`<option value='todas'>Todas</option>${CATEGORIES.map(c=>`<option value='${c}'>${c}</option>`).join('')}`; initAuth(); initAdmin(); bind(); renderCatalog(); renderCart(); reveal();}catch(e){console.error(e); document.body.innerHTML='<div class="panel">Error al cargar la tienda.</div>';}});

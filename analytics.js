@@ -1,3 +1,2 @@
-const Analytics={k:'v2_analytics',data:JSON.parse(localStorage.getItem('v2_analytics')||'{}')};
-Analytics.hit=(id,type)=>{Analytics.data[id]=Analytics.data[id]||{v:0,a:0};Analytics.data[id][type]++;localStorage.setItem(Analytics.k,JSON.stringify(Analytics.data));};
-Analytics.top=()=>Object.entries(Analytics.data).sort((a,b)=>(b[1].a+b[1].v)-(a[1].a+a[1].v)).slice(0,5);
+const Analytics={k:'v3_analytics',d:JSON.parse(localStorage.getItem('v3_analytics')||'{}')};
+Analytics.hit=(id,t)=>{Analytics.d[id]=Analytics.d[id]||{v:0,a:0};Analytics.d[id][t]++;localStorage.setItem(Analytics.k,JSON.stringify(Analytics.d));};
