@@ -1,71 +1,126 @@
 import { useEffect, useMemo, useState } from 'react'
 
-type FadeInProps = { children: React.ReactNode; delay?: number; duration?: number; className?: string }
-function FadeIn({ children, delay = 0, duration = 1000, className = '' }: FadeInProps) {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setVisible(true), delay); return () => clearTimeout(t) }, [delay])
-  return <div className={`transition-opacity ${className}`} style={{ opacity: visible ? 1 : 0, transitionDuration: `${duration}ms` }}>{children}</div>
+type Property = {
+  id: number
+  title: string
+  type: 'Casa' | 'Departamento' | 'Terreno'
+  zone: 'Centro' | 'Norte' | 'Sur'
+  rooms: number
+  price: number
+  location: string
+  description: string
+  details: string
+  image: string
+  gallery: string[]
+  popular?: boolean
 }
 
-function AnimatedHeading({ text, charDelay = 30 }: { text: string; charDelay?: number }) {
-  const [visible, setVisible] = useState(false)
-  const lines = text.split('\n')
-  useEffect(() => { const t = setTimeout(() => setVisible(true), 200); return () => clearTimeout(t) }, [])
-  return <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-normal mb-4" style={{ letterSpacing: '-0.04em' }}>{lines.map((line, lineIndex) => <div key={lineIndex}>{line.split('').map((char, charIndex) => { const delay = lineIndex * line.length * charDelay + charIndex * charDelay; return <span key={`${lineIndex}-${charIndex}`} className="inline-block" style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateX(0)' : 'translateX(-18px)', transition: `opacity 500ms ease ${delay}ms, transform 500ms ease ${delay}ms` }}>{char === ' ' ? '\u00A0' : char}</span> })}</div>)}</h1>
-}
+const WHATSAPP_BASE = 'https://wa.me/549XXXXXXXXXX?text=Hola%20quiero%20consultar%20por%20una%20propiedad'
 
-type Property = { id: number; type: 'Casa' | 'Departamento' | 'Terreno'; zone: 'Zona Norte' | 'Zona Sur' | 'Zona Centro'; image: string; gallery: string[]; price: number; location: string; description: string; fullDescription: string; lat: number; lng: number }
-const properties: Property[] = [
-  { id: 1, type: 'Casa', zone: 'Zona Norte', image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80'], price: 185000, location: 'Candioti Norte, Santa Fe', description: 'Casa de 3 dormitorios con patio verde y cochera doble.', fullDescription: 'Propiedad familiar en zona residencial premium con ambientes amplios, cocina integrada, patio parquizado y cochera para dos vehículos.', lat: -31.617, lng: -60.694 },
-  { id: 2, type: 'Departamento', zone: 'Zona Norte', image: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80'], price: 138000, location: 'Guadalupe, Santa Fe', description: 'Unidad moderna con balcón aterrazado.', fullDescription: 'Departamento a estrenar con diseño contemporáneo, balcón corrido, amenities y excelente conectividad urbana.', lat: -31.624, lng: -60.682 },
-  { id: 3, type: 'Terreno', zone: 'Zona Norte', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80'], price: 72000, location: 'Country Los Molinos', description: 'Lote de 900 m² ideal para vivienda premium.', fullDescription: 'Terreno con gran frente y orientación ideal para construir vivienda de categoría en entorno consolidado.', lat: -31.588, lng: -60.72 },
-  { id: 4, type: 'Casa', zone: 'Zona Sur', image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80'], price: 162000, location: 'Barrio Sur, Santa Fe', description: 'Diseño contemporáneo, quincho y pileta.', fullDescription: 'Casa de estilo minimalista con terminaciones premium, quincho cubierto y piscina climatizada.', lat: -31.652, lng: -60.708 },
-  { id: 5, type: 'Departamento', zone: 'Zona Sur', image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80'], price: 119500, location: 'Centro Sur, Rosario', description: '2 ambientes premium con amenities.', fullDescription: 'Departamento ideal para renta o primera vivienda, con amenities completos y seguridad permanente.', lat: -32.959, lng: -60.639 },
-  { id: 6, type: 'Terreno', zone: 'Zona Sur', image: 'https://images.unsplash.com/photo-1499591934245-40b55745b905?auto=format&fit=crop&w=1200&q=80', gallery: ['https://images.unsplash.com/photo-1499591934245-40b55745b905?auto=format&fit=crop&w=1200&q=80'], price: 55000, location: 'Santo Tomé', description: 'Terreno en esquina con rápida salida.', fullDescription: 'Lote con excelente accesibilidad para desarrollo o casa de fin de semana.', lat: -31.669, lng: -60.766 },
-]
-const whatsappLink = 'https://wa.me/549XXXXXXXXXX?text=Hola%20quiero%20consultar%20por%20una%20propiedad'
+const properties: Property[] = Array.from({ length: 20 }).map((_, i) => {
+  const zones: Property['zone'][] = ['Centro', 'Norte', 'Sur']
+  const types: Property['type'][] = ['Casa', 'Departamento', 'Terreno']
+  const zone = zones[i % 3]
+  const type = types[i % 3]
+  const rooms = type === 'Terreno' ? 0 : (i % 5) + 1
+  const base = 65000 + i * 8500
+  const img = [
+    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80'
+  ][i % 4]
+  return {
+    id: i + 1,
+    title: `${type} ${zone} ${i + 1}`,
+    type,
+    zone,
+    rooms,
+    price: base,
+    location: `${zone}, Santa Fe`,
+    description: `${type} con excelente potencial de inversión y ubicación estratégica.`,
+    details: `Propiedad ${type.toLowerCase()} en zona ${zone.toLowerCase()} con documentación lista para operar.`,
+    image: img,
+    gallery: [img, 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=1200&q=80'],
+    popular: i % 4 === 0
+  }
+})
 
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   const [zone, setZone] = useState('Todas')
   const [type, setType] = useState('Todos')
+  const [rooms, setRooms] = useState('Todos')
   const [maxPrice, setMaxPrice] = useState(300000)
+  const [query, setQuery] = useState('')
+  const [fav, setFav] = useState<number[]>([])
+  const [compare, setCompare] = useState<number[]>([])
   const [active, setActive] = useState<Property | null>(null)
-  const [scrollY, setScrollY] = useState(0)
-  useEffect(() => { const onScroll = () => setScrollY(window.scrollY); window.addEventListener('scroll', onScroll); return () => window.removeEventListener('scroll', onScroll) }, [])
+  const [loading, setLoading] = useState(true)
+  const [budget, setBudget] = useState(120000)
+  const [loanAmount, setLoanAmount] = useState(100000)
+  const [months, setMonths] = useState(24)
 
-  const filtered = useMemo(() => properties.filter((p) => (zone === 'Todas' || p.zone === zone) && (type === 'Todos' || p.type === type) && p.price <= maxPrice), [zone, type, maxPrice])
-  const whatsappPrefill = `${whatsappLink}%20(${active?.location ?? 'propiedad'})`
+  useEffect(() => { const t = setTimeout(() => setLoading(false), 900); return () => clearTimeout(t) }, [])
 
-  return <div className="min-h-screen bg-black text-white font-sans">
-    <section id="inicio" className="relative min-h-screen overflow-hidden">
-      <video className="absolute inset-0 w-full h-full object-cover transition-transform duration-500" style={{ transform: `scale(${1 + Math.min(scrollY * 0.00012, 0.08)})` }} src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4" autoPlay loop muted playsInline />
-      <div className="absolute inset-0 pointer-events-none" style={{ backdropFilter: `blur(${Math.min(scrollY / 400, 1.2)}px)` }} />
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <div className="px-6 md:px-12 lg:px-16 pt-6"><nav className="liquid-glass rounded-xl px-4 py-2 flex items-center justify-between"><div className="text-2xl font-semibold tracking-tight">SF Inmobiliaria</div><div className="hidden md:flex items-center gap-8 text-sm">{[['Inicio', '#inicio'], ['Propiedades', '#propiedades'], ['Nosotros', '#nosotros'], ['Contacto', '#contacto']].map(([i, h]) => <a key={i} href={h} className="hover:text-gray-300 transition-colors">{i}</a>)}</div><a href="#contacto" className="bg-white text-black px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Consultar</a></nav></div>
-        <div className="px-6 md:px-12 lg:px-16 flex-1 flex flex-col justify-end pb-12 lg:pb-16"><div className="lg:grid lg:grid-cols-2 lg:items-end gap-8"><div><AnimatedHeading text={'Encontrá tu próximo hogar\nen Santa Fe.'} /><FadeIn delay={800}><p className="text-base md:text-lg text-gray-300 mb-5 max-w-2xl">Propiedades exclusivas y oportunidades únicas para vivir o invertir.</p></FadeIn><FadeIn delay={1200}><div className="flex flex-wrap gap-4"><a href="#propiedades" className="bg-white text-black px-8 py-3 rounded-lg font-medium">Ver propiedades</a><a href={whatsappLink} target="_blank" rel="noreferrer" className="liquid-glass border border-white/20 text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-black transition-colors">Hablar por WhatsApp</a></div></FadeIn></div><FadeIn delay={1400} className="flex items-end justify-start lg:justify-end mt-6 lg:mt-0"><div className="liquid-glass border border-white/20 px-6 py-3 rounded-xl text-lg md:text-xl lg:text-2xl font-light">Compra. Venta. Inversión.</div></FadeIn></div></div>
-      </div>
-    </section>
+  const filtered = useMemo(() => properties.filter((p) =>
+    (zone === 'Todas' || p.zone === zone) &&
+    (type === 'Todos' || p.type === type) &&
+    (rooms === 'Todos' || String(p.rooms) === rooms) &&
+    p.price <= maxPrice &&
+    (!query || `${p.type} ${p.description}`.toLowerCase().includes(query.toLowerCase()))
+  ), [zone, type, rooms, maxPrice, query])
 
-    <section id="propiedades" className="px-6 md:px-12 lg:px-16 py-16 scroll-mt-24">
-      <h2 className="text-3xl md:text-4xl font-normal mb-6">Propiedades disponibles en Santa Fe</h2>
-      <div className="grid md:grid-cols-3 gap-3 mb-8 liquid-glass border border-white/20 p-4 rounded-xl">
-        <select value={zone} onChange={(e) => setZone(e.target.value)} className="bg-black/40 border border-white/20 rounded-lg px-3 py-2"><option>Todas</option><option>Zona Norte</option><option>Zona Sur</option><option>Zona Centro</option></select>
-        <select value={type} onChange={(e) => setType(e.target.value)} className="bg-black/40 border border-white/20 rounded-lg px-3 py-2"><option>Todos</option><option>Casa</option><option>Departamento</option><option>Terreno</option></select>
-        <div className="flex items-center gap-3"><span className="text-sm text-gray-300">Hasta USD {maxPrice.toLocaleString()}</span><input type="range" min={50000} max={300000} step={5000} value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full" /></div>
-      </div>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((p) => <article key={p.id} onClick={() => setActive(p)} className="cursor-pointer liquid-glass border border-white/20 rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-white/10"><img src={p.image} alt={p.location} className="w-full h-52 object-cover transition-transform duration-700 hover:scale-110" /><div className="p-5 space-y-2"><p className="text-xs text-gray-300 uppercase tracking-wide">{p.type} · {p.zone}</p><p className="text-xl font-medium">USD {p.price.toLocaleString()}</p><p className="text-gray-300">{p.location}</p><p className="text-sm text-gray-300">{p.description}</p></div></article>)}
-      </div>
-    </section>
+  const recommended = properties.filter((p) => p.price <= budget).slice(0, 3)
+  const monthlyLoan = (loanAmount * (1 + 0.32)) / months
 
-    <section className="px-6 md:px-12 lg:px-16 py-10"><h2 className="text-3xl font-normal mb-6">Cómo funciona</h2><div className="grid md:grid-cols-3 gap-6">{['1. Contanos qué buscás', '2. Seleccionamos oportunidades', '3. Cerramos tu operación'].map((t) => <div key={t} className="liquid-glass border border-white/20 rounded-xl p-6">{t}</div>)}</div></section>
-    <section className="px-6 md:px-12 lg:px-16 py-10"><h2 className="text-3xl font-normal mb-6">Estadísticas</h2><div className="grid md:grid-cols-3 gap-6">{[['+450', 'Operaciones'], ['98%', 'Clientes satisfechos'], ['+12', 'Años en el mercado']].map(([n, l]) => <div key={n} className="liquid-glass border border-white/20 rounded-xl p-6 text-center"><p className="text-4xl font-light">{n}</p><p className="text-gray-300">{l}</p></div>)}</div></section>
-    <section id="nosotros" className="px-6 md:px-12 lg:px-16 py-10 scroll-mt-24"><div className="liquid-glass border border-white/20 rounded-xl p-8 max-w-4xl"><h2 className="text-3xl font-normal mb-4">Quiénes somos</h2><p className="text-gray-300 leading-relaxed">En SF Inmobiliaria brindamos asesoramiento integral para clientes que buscan vivir mejor o invertir con seguridad en Santa Fe y Rosario.</p></div></section>
-    <section className="px-6 md:px-12 lg:px-16 py-10"><h2 className="text-3xl font-normal mb-6">Opiniones de clientes</h2><div className="grid md:grid-cols-3 gap-6">{['“Vendimos rápido y al mejor precio.”', '“Muy profesionales y cercanos.”', '“Excelente experiencia de inversión.”'].map((t) => <blockquote key={t} className="liquid-glass border border-white/20 rounded-xl p-6 text-gray-300">{t}</blockquote>)}</div></section>
-    <section id="contacto" className="px-6 md:px-12 lg:px-16 py-10 pb-24 scroll-mt-24"><div className="grid lg:grid-cols-2 gap-6"><div className="liquid-glass border border-white/20 rounded-xl p-8"><h2 className="text-3xl font-normal mb-6">Contacto</h2><form className="space-y-4"><input className="w-full liquid-glass border border-white/20 rounded-lg px-4 py-3" placeholder="Nombre" /><input className="w-full liquid-glass border border-white/20 rounded-lg px-4 py-3" placeholder="Email" type="email" /><textarea className="w-full liquid-glass border border-white/20 rounded-lg px-4 py-3 min-h-28" placeholder="Mensaje" /><a href={whatsappLink} target="_blank" rel="noreferrer" className="inline-block bg-white text-black px-6 py-3 rounded-lg font-medium">Enviar por WhatsApp</a></form></div><div className="liquid-glass border border-white/20 rounded-xl overflow-hidden min-h-[420px]"><iframe title="Mapa Santa Fe" src="https://www.google.com/maps?q=Santa+Fe,+Argentina&output=embed" className="w-full h-full min-h-[420px]" loading="lazy" /></div></div></section>
+  const colors = theme === 'dark' ? 'bg-black text-white' : 'bg-zinc-100 text-zinc-900'
 
-    {active && <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setActive(null)}><div className="liquid-glass border border-white/20 rounded-2xl max-w-4xl w-full p-6" onClick={(e) => e.stopPropagation()}><div className="grid md:grid-cols-2 gap-6"><div className="space-y-3">{active.gallery.map((img) => <img key={img} src={img} className="w-full h-44 object-cover rounded-xl" />)}</div><div><h3 className="text-2xl mb-2">{active.type} · {active.location}</h3><p className="text-3xl font-light mb-3">USD {active.price.toLocaleString()}</p><p className="text-gray-300 mb-5">{active.fullDescription}</p><a href={whatsappPrefill} target="_blank" rel="noreferrer" className="bg-white text-black px-6 py-3 rounded-lg font-medium inline-block">Consultar por WhatsApp</a></div></div></div></div>}
+  return (
+    <div className={`${colors} min-h-screen transition-colors duration-500`}>
+      <section id="inicio" className="relative min-h-screen overflow-hidden">
+        <video className="absolute inset-0 h-full w-full object-cover" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4" autoPlay loop muted playsInline />
+        <div className="relative z-10 min-h-screen flex flex-col px-6 md:px-12 lg:px-16 pt-6">
+          <nav className="liquid-glass rounded-xl px-4 py-2 flex items-center justify-between">
+            <div className="text-2xl font-semibold">SF Inmobiliaria</div>
+            <div className="hidden md:flex gap-6 text-sm">{['inicio','propiedades','como-funciona','contacto'].map(s => <a key={s} href={`#${s}`} className="hover:text-gray-300">{s.replace('-',' ')}</a>)}</div>
+            <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="bg-white text-black px-4 py-2 rounded-lg text-sm">{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</button>
+          </nav>
+          <div className="flex-1 flex items-end pb-16"><div><h1 className="text-5xl lg:text-7xl" style={{ letterSpacing: '-0.04em' }}>Encontrá tu próximo hogar<br/>en Santa Fe.</h1><p className="mt-4 text-gray-300 max-w-2xl">Propiedades exclusivas y oportunidades únicas para vivir o invertir.</p><div className="mt-6 flex gap-4"><a href="#propiedades" className="bg-white text-black px-8 py-3 rounded-lg">Ver propiedades</a><a href={WHATSAPP_BASE} className="liquid-glass border border-white/20 px-8 py-3 rounded-lg">Hablar por WhatsApp</a></div></div></div>
+        </div>
+      </section>
 
-    <a href="https://wa.me/549XXXXXXXXXX?text=Hola%20soy%20nuevo%20en%20la%20web%20y%20quiero%20asesoramiento%20inicial" target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-50 bg-white text-black px-5 py-3 rounded-full font-medium shadow-lg hover:bg-gray-100 transition-all animate-pulse">WhatsApp</a>
-  </div>
+      <section id="propiedades" className="px-6 md:px-12 lg:px-16 py-14">
+        <h2 className="text-4xl mb-6">Propiedades disponibles en Santa Fe</h2>
+        <div className="liquid-glass border border-white/20 rounded-xl p-4 grid md:grid-cols-5 gap-3 mb-6">
+          <input placeholder='Busco casa con patio' value={query} onChange={(e)=>setQuery(e.target.value)} className='bg-black/40 border border-white/20 rounded-lg px-3 py-2'/>
+          <select value={zone} onChange={(e)=>setZone(e.target.value)} className='bg-black/40 border border-white/20 rounded-lg px-3 py-2'><option>Todas</option><option>Centro</option><option>Norte</option><option>Sur</option></select>
+          <select value={type} onChange={(e)=>setType(e.target.value)} className='bg-black/40 border border-white/20 rounded-lg px-3 py-2'><option>Todos</option><option>Casa</option><option>Departamento</option><option>Terreno</option></select>
+          <select value={rooms} onChange={(e)=>setRooms(e.target.value)} className='bg-black/40 border border-white/20 rounded-lg px-3 py-2'><option>Todos</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select>
+          <div className='flex items-center gap-2 text-xs'>USD {maxPrice.toLocaleString()}<input type='range' min={50000} max={300000} step={5000} value={maxPrice} onChange={(e)=>setMaxPrice(Number(e.target.value))}/></div>
+        </div>
+        {loading ? <div className='grid md:grid-cols-4 gap-4'>{Array.from({length:8}).map((_,i)=><div key={i} className='h-56 bg-white/10 animate-pulse rounded-xl'/>)}</div> : <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">{filtered.map(p => <article key={p.id} className='liquid-glass border border-white/20 rounded-xl overflow-hidden hover:-translate-y-1 transition-all'><img src={p.image} className='h-44 w-full object-cover'/><div className='p-4'><p className='text-xs text-gray-300'>{p.type} · {p.zone} · {p.rooms || '-'} amb.</p><p className='text-lg'>USD {p.price.toLocaleString()}</p><p className='text-sm text-gray-300'>{p.location}</p><p className='text-xs text-gray-300 mb-3'>{p.description}</p><div className='flex flex-wrap gap-2'><button onClick={()=>setActive(p)} className='bg-white text-black px-3 py-1 rounded'>Ver</button><a href={`${WHATSAPP_BASE}%20(${encodeURIComponent(p.title)})`} className='liquid-glass border border-white/20 px-3 py-1 rounded'>WhatsApp</a><button onClick={()=>setFav(v=>v.includes(p.id)?v.filter(x=>x!==p.id):[...v,p.id])} className='px-3 py-1 rounded border border-white/20'>{fav.includes(p.id)?'★':'☆'}</button><button onClick={()=>setCompare(v=>v.includes(p.id)?v.filter(x=>x!==p.id):v.length<3?[...v,p.id]:v)} className='px-3 py-1 rounded border border-white/20'>Comparar</button></div>{p.popular && <p className='mt-2 text-[11px] text-emerald-300'>Propiedad popular</p>}</div></article>)}</div>}
+      </section>
+
+      <section className='px-6 md:px-12 lg:px-16 py-10 grid lg:grid-cols-2 gap-6'>
+        <div className='liquid-glass border border-white/20 rounded-xl p-6'><h3 className='text-2xl mb-3'>Simulador de compra</h3><p>Presupuesto: USD {budget.toLocaleString()}</p><input type='range' min={50000} max={300000} step={5000} value={budget} onChange={(e)=>setBudget(Number(e.target.value))}/><div className='mt-4 space-y-2 text-sm'>{recommended.map(r=><p key={r.id}>{r.title} — USD {r.price.toLocaleString()}</p>)}</div></div>
+        <div className='liquid-glass border border-white/20 rounded-xl p-6'><h3 className='text-2xl mb-3'>Simulador de crédito</h3><p>Monto: USD {loanAmount.toLocaleString()}</p><input type='range' min={50000} max={250000} step={5000} value={loanAmount} onChange={(e)=>setLoanAmount(Number(e.target.value))}/><select value={months} onChange={(e)=>setMonths(Number(e.target.value))} className='mt-3 bg-black/40 border border-white/20 rounded px-3 py-2'><option value={12}>12 meses</option><option value={24}>24 meses</option><option value={60}>60 meses</option></select><p className='mt-3'>Cuota estimada: USD {monthlyLoan.toFixed(0)}</p><p className='text-sm text-gray-300'>Interés aproximado anual: 32%</p></div>
+      </section>
+
+      <section id='como-funciona' className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Cómo funciona</h2><div className='grid md:grid-cols-3 gap-4'>{['Elegí tus filtros','Recibí asesoramiento','Concretá la operación'].map(t=><div key={t} className='liquid-glass border border-white/20 rounded-xl p-6'>{t}</div>)}</div></section>
+      <section className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Por qué elegirnos</h2><div className='grid md:grid-cols-3 gap-4'>{['Transparencia total','Experiencia local','Acompañamiento legal'].map(t=><div key={t} className='liquid-glass border border-white/20 rounded-xl p-6'>{t}</div>)}</div></section>
+      <section className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Estadísticas</h2><div className='grid md:grid-cols-3 gap-4'><div className='liquid-glass rounded-xl p-6'>+620 propiedades vendidas</div><div className='liquid-glass rounded-xl p-6'>99% clientes satisfechos</div><div className='liquid-glass rounded-xl p-6'>15 años de experiencia</div></div></section>
+      <section className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Opiniones de clientes</h2><div className='grid md:grid-cols-3 gap-4'>{['“Servicio impecable.”','“Venta rápida y segura.”','“Excelente asesoramiento.”'].map(t=><div key={t} className='liquid-glass border border-white/20 rounded-xl p-6'>{t}</div>)}</div></section>
+      <section className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Asesor inmobiliario</h2><div className='liquid-glass border border-white/20 rounded-xl p-6 flex items-center gap-4'><img src='https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?auto=format&fit=crop&w=300&q=80' className='w-20 h-20 rounded-full object-cover'/><div><p className='text-xl'>María González</p><p className='text-sm text-gray-300'>Asesora Senior · +54 342 456 7890</p></div></div></section>
+      <section id='contacto' className='px-6 md:px-12 lg:px-16 py-10'><div className='liquid-glass border border-white/20 rounded-xl p-4'><iframe title='mapa' src='https://www.google.com/maps?q=Santa+Fe,+Argentina&output=embed' className='w-full h-[360px]'/></div></section>
+      <section className='px-6 md:px-12 lg:px-16 py-10'><h2 className='text-3xl mb-6'>Legal</h2><div className='grid md:grid-cols-3 gap-4 text-sm text-gray-300'><div className='liquid-glass p-4 rounded-xl'>Términos y condiciones de uso de plataforma y reservas.</div><div className='liquid-glass p-4 rounded-xl'>Política de privacidad y tratamiento de datos personales.</div><div className='liquid-glass p-4 rounded-xl'>Aviso legal inmobiliario: información sujeta a verificación documental.</div></div></section>
+
+      {active && <div className='fixed inset-0 z-[70] bg-black/80 flex items-center justify-center p-4' onClick={()=>setActive(null)}><div className='liquid-glass border border-white/20 rounded-2xl max-w-4xl w-full p-6' onClick={(e)=>e.stopPropagation()}><div className='grid md:grid-cols-2 gap-5'><div className='space-y-3'>{active.gallery.map(g=><img key={g} src={g} className='w-full h-44 object-cover rounded-xl'/>)}</div><div><h3 className='text-2xl'>{active.title}</h3><p className='text-3xl my-2'>USD {active.price.toLocaleString()}</p><p className='text-gray-300 mb-2'>{active.details}</p><p className='text-sm text-gray-300'>Datos técnicos: {active.rooms || 0} ambientes · {active.zone} · {active.type}</p><a href={`${WHATSAPP_BASE}%20(${encodeURIComponent(active.title)})`} className='mt-4 inline-block bg-white text-black px-5 py-2 rounded-lg'>Consultar por WhatsApp</a></div></div></div></div>}
+
+      {compare.length > 1 && <div className='fixed left-6 bottom-6 z-50 liquid-glass border border-white/20 rounded-xl p-4 text-sm'>Comparador activo: {compare.map(id => properties.find(p=>p.id===id)?.title).join(' vs ')}</div>}
+      <div className='fixed top-24 right-6 z-50 space-y-2 text-xs'><div className='liquid-glass px-3 py-2 rounded-lg'>Alguien está viendo esta propiedad</div><div className='liquid-glass px-3 py-2 rounded-lg'>Consulta reciente en zona norte</div></div>
+      <a href='https://wa.me/549XXXXXXXXXX?text=Hola%20soy%20nuevo%20en%20la%20web%20y%20quiero%20asesoramiento%20inicial' className='fixed bottom-6 right-6 z-50 bg-white text-black px-5 py-3 rounded-full font-medium animate-pulse'>Chat WhatsApp</a>
+      <div className='fixed bottom-24 right-6 z-50 liquid-glass rounded-xl p-3 text-xs'>Asesor online: ¡Hola! ¿Querés que te recomiende propiedades ahora?</div>
+    </div>
+  )
 }
