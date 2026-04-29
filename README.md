@@ -1,16 +1,28 @@
-## Hi there 👋
+# PC Titan Ultra Landing Page
 
-<!--
-**geronimo12-prog/geronimo12-prog** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Página estática en español para mostrar accesorios de PC top de gama.
 
-Here are some ideas to get you started:
+## Cómo hacer que funcione
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### Opción 1 (rápida)
+1. Descarga/clona el repo.
+2. Abre el archivo `index.html` con doble clic en tu navegador.
+
+### Opción 2 (recomendada, servidor local)
+Desde la carpeta del proyecto ejecuta:
+
+```bash
+python3 -m http.server 5500
+```
+
+Luego abre:
+
+- http://localhost:5500/index.html
+
+## Estructura
+- `index.html`: contiene todo (HTML + CSS), no requiere dependencias ni instalación.
+
+## Solución de problemas
+- Si la página sale en blanco, confirma que `index.html` exista en la raíz.
+- Si no abre `localhost`, revisa que el puerto 5500 no esté ocupado.
+- Si usas VS Code, también puedes usar "Live Server" y abrir el archivo con ese plugin.

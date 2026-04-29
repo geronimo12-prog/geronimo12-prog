@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PC Titan Ultra | Accesorios Top de Gama</title>
+  <style>
+    :root {
+      --bg: #05060a;
+      --card: #101525;
+      --text: #f2f6ff;
+      --muted: #9eb2d1;
+      --primary: #00f6ff;
+      --secondary: #8a6dff;
+      --success: #20fcb3;
+      --danger: #ff5f8f;
+      --gold: #ffd34f;
+      --shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 20% 10%, #18254a 0%, #070b16 35%, var(--bg) 70%);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container { width: min(1200px, 92vw); margin: 0 auto; }
+
+    header {
+      padding: 3rem 0 2rem;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      gap: .5rem;
+      background: rgba(138,109,255,.2);
+      border: 1px solid rgba(138,109,255,.6);
+      color: #d8ccff;
+      border-radius: 999px;
+      padding: .35rem .9rem;
+      font-size: .8rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 30px rgba(0, 246, 255, 0.25);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 740px;
+      margin: 0 auto;
+      font-size: clamp(1rem, 2.3vw, 1.15rem);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 2.25rem 0 3rem;
+    }
+
+    .stat {
+      background: linear-gradient(160deg, rgba(16,21,37,.95), rgba(7,10,17,.92));
+      border: 1px solid rgba(158,178,209,.2);
+      border-radius: 14px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat strong { display:block; font-size: 1.2rem; color: var(--primary); }
+    .stat span { color: var(--muted); font-size: .92rem; }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .card {
+      background: linear-gradient(160deg, rgba(16,21,37,1), rgba(8,11,19,1));
+      border: 1px solid rgba(158,178,209,.22);
+      border-radius: 18px;
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+
+    .card:hover { transform: translateY(-5px); border-color: rgba(0,246,255,.5); }
+
+    .tag {
+      display:inline-block;
+      font-size: .72rem;
+      padding: .22rem .55rem;
+      border-radius: 999px;
+      margin-bottom: .7rem;
+      background: rgba(0,246,255,.14);
+      color: #98f9ff;
+      border: 1px solid rgba(0,246,255,.45);
+    }
+
+    .card h3 { font-size: 1.1rem; margin-bottom: .4rem; }
+    .card p { color: var(--muted); font-size: .92rem; min-height: 58px; }
+
+    .specs { list-style:none; margin: .75rem 0; display:grid; gap: .3rem; }
+    .specs li { font-size: .84rem; color: #cbdaef; }
+
+    .price-row {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-top:.9rem; padding-top:.8rem;
+      border-top: 1px solid rgba(158,178,209,.18);
+    }
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    button {
+      border:none;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color:#071122;
+      font-weight: 700;
+      padding: .55rem .8rem;
+      border-radius: 10px;
+      cursor:pointer;
+    }
+
+    .section-title {
+      margin-bottom: 1rem;
+      font-size: 1.55rem;
+    }
+
+    .bundle {
+      margin: 2rem 0 3.5rem;
+      background: linear-gradient(120deg, rgba(138,109,255,.2), rgba(0,246,255,.09));
+      border: 1px solid rgba(138,109,255,.4);
+      border-radius: 18px;
+      padding: 1.2rem;
+    }
+
+    .bundle strong { color: var(--success); font-size: 1.5rem; }
+
+    footer {
+      border-top: 1px solid rgba(158,178,209,.2);
+      padding: 1.5rem 0 2rem;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">🚀 Edición Elite 2026 · Solo accesorios premium</div>
+      <h1>La mejor página del mundo de accesorios PC</h1>
+      <p class="subtitle">
+        Todo lo que un setup extremo necesita: rendimiento brutal, diseño impecable y garantía internacional.
+        Precios en USD con soporte VIP 24/7 y envío global express.
+      </p>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><strong>+3,500</strong><span>clientes PRO satisfechos</span></article>
+      <article class="stat"><strong>24/7</strong><span>asesoría técnica especializada</span></article>
+      <article class="stat"><strong>48h</strong><span>entrega premium internacional</span></article>
+      <article class="stat"><strong>5 años</strong><span>garantía en línea elite</span></article>
+    </section>
+
+    <h2 class="section-title">🔥 Catálogo Top de Gama</h2>
+    <section class="products">
+      <article class="card">
+        <span class="tag">Teclado Mecánico</span>
+        <h3>TitanBoard X99 Carbon</h3>
+        <p>Switches ópticos ultrarrápidos, cuerpo de fibra de carbono, anti-ghosting total y RGB inteligente.</p>
+        <ul class="specs">
+          <li>• Latencia: 0.2 ms</li>
+          <li>• Material: Carbon + Aluminio CNC</li>
+          <li>• Vida útil: 150M pulsaciones</li>
+        </ul>
+        <div class="price-row"><span class="price">$429</span><button>Comprar</button></div>
+      </article>
+
+      <article class="card">
+        <span class="tag">Mouse Competitivo</span>
+        <h3>QuantumClaw V12 Pro</h3>
+        <p>Sensor 8K real, 39g de peso, tracking submicrónico y recubrimiento anti-sudor para esports.</p>
+        <ul class="specs">
+          <li>• DPI: 42,000</li>
+          <li>• Polling Rate: 8,000 Hz</li>
+          <li>• Batería: 120 horas</li>
+        </ul>
+        <div class="price-row"><span class="price">$299</span><button>Comprar</button></div>
+      </article>
+
+      <article class="card">
+        <span class="tag">Audio Hi‑Fi Gaming</span>
+        <h3>NovaSound Aether 7.1</h3>
+        <p>Audio envolvente real con drivers de grafeno, cancelación híbrida y micrófono broadcast.</p>
+        <ul class="specs">
+          <li>• Respuesta: 10Hz–45kHz</li>
+          <li>• Micrófono: 32-bit / 96kHz</li>
+          <li>• ANC: 3 niveles adaptativos</li>
+        </ul>
+        <div class="price-row"><span class="price">$519</span><button>Comprar</button></div>
+      </article>
+
+      <article class="card">
+        <span class="tag">Monitor Elite</span>
+        <h3>HyperView OLED 360</h3>
+        <p>Pantalla OLED 27" 360Hz, HDR de estudio, tiempo de respuesta instantáneo y colores cinematográficos.</p>
+        <ul class="specs">
+          <li>• Resolución: 4K UHD</li>
+          <li>• Refresh: 360Hz</li>
+          <li>• Tiempo respuesta: 0.01ms</li>
+        </ul>
+        <div class="price-row"><span class="price">$1,799</span><button>Comprar</button></div>
+      </article>
+
+      <article class="card">
+        <span class="tag">Refrigeración Avanzada</span>
+        <h3>CryoLoop Infinity 480</h3>
+        <p>Sistema líquida AIO con bloque cerámico, bomba magnética silenciosa y control térmico por IA.</p>
+        <ul class="specs">
+          <li>• Radiador: 480 mm</li>
+          <li>• Ruido: 18 dB máximo</li>
+          <li>• Software: App móvil + desktop</li>
+        </ul>
+        <div class="price-row"><span class="price">$649</span><button>Comprar</button></div>
+      </article>
+
+      <article class="card">
+        <span class="tag">Silla Ergonómica</span>
+        <h3>ErgoThrone Prime XL</h3>
+        <p>Asiento de memoria inteligente, soporte lumbar dinámico y estructura de titanio aeronáutico.</p>
+        <ul class="specs">
+          <li>• Carga máxima: 180 kg</li>
+          <li>• Ajustes: 4D + reclinado 165°</li>
+          <li>• Material: cuero vegano premium</li>
+        </ul>
+        <div class="price-row"><span class="price">$899</span><button>Comprar</button></div>
+      </article>
+    </section>
+
+    <section class="bundle">
+      <h2>💎 Pack "Best in the World"</h2>
+      <p>Llévate el setup completo con instalación remota, calibración de color y perfil competitivo personalizado.</p>
+      <p><strong>Precio total especial: $4,199</strong> (antes $4,594)</p>
+    </section>
+
+    <footer>
+      © 2026 PC Titan Ultra · Calidad extrema para creadores, gamers y profesionales sin límites.
+    </footer>
+  </div>
+</body>
+</html>
