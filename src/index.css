@@ -41,3 +41,7 @@ body {
   mask-composite: exclude;
   pointer-events: none;
 }
+
+html {
+  scroll-behavior: smooth;
+}
