@@ -1,5 +1,5 @@
 window.addEventListener('error',e=>console.error('JS ERROR',e.message));
-let catalog=Admin.load(), coupon=null;
+let catalog=(Admin.load()||[]).filter(p=>validateProduct(p)).map(p=>({...p,image:p.img})), coupon=null;
 const $=s=>document.querySelector(s); const fmt=n=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n);
 
 function fuzzy(text,q){q=q.toLowerCase();text=text.toLowerCase();if(text.includes(q))return true;return q.split('').every(ch=>text.includes(ch));}
@@ -15,9 +15,9 @@ function filtered(){
 }
 function render(){
   const list=filtered(); const box=$('#products');
-  if(!list.length){box.innerHTML='<div class="panel">Sin resultados</div>';return;}
+  if(!list.length){box.innerHTML='<div class="panel">Sin resultados o productos inválidos filtrados por seguridad.</div>';return;}
   box.innerHTML=list.map((p,i)=>{const fp=Discounts.final(p,coupon); const off=fp<p.price?`<span class='badge'>-${Math.round((1-fp/p.price)*100)}% OFF</span>`:'';Analytics.hit(p.id,'v');
-    return `<article class='card' style='animation-delay:${i*40}ms'><img loading='lazy' src='${p.image}' alt='${p.name}'><div class='b'><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p>${off}<p>${fp<p.price?`<s>${fmt(p.price)}</s> ${fmt(fp)}`:fmt(p.price)}</p><button data-a='${p.id}'>Agregar</button><button data-w='${p.id}'>${Wishlist.has(p.id)?'Quitar ❤':'❤ Favorito'}</button></div></article>`}).join('');
+    return `<article class='card' style='animation-delay:${i*40}ms'><img loading='lazy' src='${p.image}' alt='${p.name}'><div class='b'><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p>${off}<p><strong>Nuestro: ${fmt(fp)}</strong> <br><s>Referencia: ${fmt(p.referencePrice||p.price)}</s></p><button data-a='${p.id}'>Agregar</button><button data-w='${p.id}'>${Wishlist.has(p.id)?'Quitar ❤':'❤ Favorito'}</button></div></article>`}).join('');
   document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const p=catalog.find(x=>x.id===b.dataset.a);Cart.add(p);Analytics.hit(p.id,'a');renderCart();toast('Agregado al carrito');});
   document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{Wishlist.toggle(b.dataset.w);render();renderFav();});
   renderFav(); renderOffers(); renderAnalytics();
