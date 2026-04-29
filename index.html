@@ -3,69 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TitanForge PC Store</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <title>HardCore Store | Hardware PC</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">TitanForge <span>PC</span></div>
-    <nav>
-      <a href="#catalogo">Catálogo</a>
-      <a href="#builds">Builds</a>
-      <a href="#financiacion">Cuotas</a>
-      <a href="#contacto">Contacto</a>
-    </nav>
-    <a class="btn whatsapp" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20asesoria%20para%20mi%20PC">WhatsApp</a>
+  <header class="navbar">
+    <div class="logo">HardCore <span>Store</span></div>
+    <div class="search-wrap">
+      <input id="searchInput" type="text" placeholder="Buscar: RTX 3060, Ryzen 5600X..." />
+    </div>
   </header>
 
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Tu tienda gamer de componentes reales</h1>
+      <p>Armá tu PC ideal con componentes de verdad, precios claros y carrito funcional.</p>
+      <a href="#productos" class="btn-primary">Ver catálogo</a>
+    </div>
+  </section>
+
   <main class="container">
-    <section class="hero">
-      <div>
-        <h1>Una tienda épica de verdad: dinámica, modular y lista para vender</h1>
-        <p>Ahora el sitio usa múltiples archivos (HTML + CSS + JavaScript + JSON), con catálogo dinámico, filtros, buscador, carrito visual y botones de compra funcionales por WhatsApp.</p>
-        <div class="hero-actions">
-          <a class="btn" href="#catalogo">Ver catálogo</a>
-          <a class="btn ghost" href="#financiacion">Ver financiación</a>
-        </div>
+    <section class="controls">
+      <h2>Categorías</h2>
+      <div id="categoryFilters" class="chips"></div>
+    </section>
+
+    <section id="productos">
+      <h2>Productos destacados</h2>
+      <div id="productGrid" class="product-grid"></div>
+    </section>
+
+    <aside class="cart-panel">
+      <h2>Carrito</h2>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-footer">
+        <strong>Total: <span id="cartTotal">USD 0</span></strong>
       </div>
-      <div class="kpis" id="kpis"></div>
-    </section>
-
-    <section id="catalogo" class="section">
-      <h2>Catálogo dinámico de componentes</h2>
-      <div class="tools">
-        <input id="search" placeholder="Buscar producto, ej: RTX, Ryzen, DDR5..." />
-        <select id="categoryFilter"><option value="all">Todas las categorías</option></select>
-        <select id="sortBy">
-          <option value="featured">Destacados</option>
-          <option value="price-asc">Precio: menor a mayor</option>
-          <option value="price-desc">Precio: mayor a menor</option>
-          <option value="name">Nombre A-Z</option>
-        </select>
-      </div>
-      <div id="productGrid" class="grid"></div>
-    </section>
-
-    <section id="builds" class="section two-col">
-      <article class="panel">
-        <h2>Builds recomendadas</h2>
-        <div id="buildCards" class="stack"></div>
-      </article>
-      <article id="financiacion" class="panel">
-        <h2>Cuotas y bancos</h2>
-        <table id="bankTable"></table>
-      </article>
-    </section>
-
-    <section id="contacto" class="section panel">
-      <h2>Carrito rápido + checkout por WhatsApp</h2>
-      <p>Agregá productos al carrito y enviá la lista completa con 1 click.</p>
-      <div id="cart"></div>
-      <button id="sendCart" class="btn whatsapp">Enviar carrito por WhatsApp</button>
-    </section>
+    </aside>
   </main>
 
-  <footer>© 2026 TitanForge PC · Arquitectura modular real (HTML/CSS/JS/JSON).</footer>
-  <script type="module" src="js/app.js"></script>
+  <footer>
+    <p>HardCore Store · Ecommerce demo estilo Compra Gamer / Maximus con catálogo dinámico y carrito interactivo.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
