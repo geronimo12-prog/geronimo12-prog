@@ -1,200 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PC Titan Ultra | Tienda Pro de Accesorios y Componentes</title>
-  <style>
-    :root {
-      --bg: #06070d;
-      --panel: #101525;
-      --panel-2: #131a30;
-      --text: #eef3ff;
-      --muted: #9fb0ce;
-      --primary: #00eaff;
-      --secondary: #8c6bff;
-      --ok: #2effb6;
-      --gold: #ffd452;
-      --danger: #ff628f;
-      --line: rgba(166, 182, 210, 0.25);
-      --shadow: 0 20px 40px rgba(0,0,0,.45);
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif;
-      color:var(--text);
-      background: radial-gradient(circle at 10% -10%, #213568 0%, #0b1020 35%, var(--bg) 70%);
-      line-height:1.5;
-    }
-    .container{width:min(1240px,94vw);margin:0 auto}
-    header{padding:2.2rem 0 1.3rem}
-    .topbar{
-      display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
-      margin-bottom:1.2rem
-    }
-    .brand{font-size:1.4rem;font-weight:800;letter-spacing:.3px}
-    .brand span{color:var(--primary)}
-    .cta-mini{display:flex;gap:.6rem;flex-wrap:wrap}
-    .pill{padding:.45rem .85rem;border-radius:999px;border:1px solid var(--line);color:#d5e6ff;font-size:.86rem}
-    .whatsapp{
-      background:linear-gradient(90deg,#31de78,#14bb68);color:#04230f;
-      text-decoration:none;font-weight:800;padding:.55rem .9rem;border-radius:10px
-    }
-    .hero{
-      display:grid;grid-template-columns:1.1fr .9fr;gap:1rem;align-items:stretch
-    }
-    .hero-left,.hero-right{
-      background:linear-gradient(160deg, rgba(16,21,37,.95), rgba(6,9,16,.95));
-      border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)
-    }
-    .hero-left{padding:1.4rem}
-    h1{font-size:clamp(1.8rem,4vw,3rem);line-height:1.12;margin-bottom:.75rem}
-    .sub{color:var(--muted);max-width:65ch}
-    .hero-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
-    .btn{
-      display:inline-block;padding:.65rem .95rem;border-radius:10px;text-decoration:none;
-      font-weight:700;border:1px solid transparent
-    }
-    .btn-primary{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#031322}
-    .btn-ghost{border-color:var(--line);color:#deebff}
-    .hero-right{padding:1rem;display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem}
-    .quick{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:.8rem}
-    .quick strong{display:block;color:var(--primary);font-size:1.2rem}
-
-    .section{margin:1.6rem 0}
-    .section h2{margin-bottom:.85rem;font-size:1.55rem}
-
-    .filters{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1rem}
-    .filters span{font-size:.82rem;color:#d4e0f5;border:1px solid var(--line);padding:.35rem .7rem;border-radius:999px}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
-    .card{background:linear-gradient(160deg,var(--panel),#0a0f1d);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
-    .card img{width:100%;height:150px;object-fit:cover;display:block}
-    .card-body{padding:.9rem}
-    .tag{font-size:.72rem;color:#9ff4ff;background:rgba(0,234,255,.12);border:1px solid rgba(0,234,255,.4);padding:.2rem .5rem;border-radius:999px;display:inline-block}
-    .card h3{font-size:1rem;margin:.5rem 0 .25rem}
-    .card p{font-size:.88rem;color:var(--muted)}
-    .meta{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:.7rem;padding-top:.55rem}
-    .price{font-weight:800;color:var(--gold)}
-
-    .banks{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-    .panel{background:linear-gradient(160deg,var(--panel),#0b111f);border:1px solid var(--line);border-radius:14px;padding:1rem;box-shadow:var(--shadow)}
-    table{width:100%;border-collapse:collapse;font-size:.9rem}
-    th,td{padding:.52rem .35rem;border-bottom:1px dashed rgba(166,182,210,.2);text-align:left}
-    th{color:#d7e6ff}
-    td{color:#b8c9e7}
-    .ok{color:var(--ok);font-weight:700}
-
-    .wa-box{display:flex;flex-direction:column;gap:.55rem}
-    .wa-box p{color:var(--muted)}
-
-    footer{margin:1.7rem 0 2rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.9rem;text-align:center}
-
-    @media (max-width:900px){
-      .hero{grid-template-columns:1fr}
-      .banks{grid-template-columns:1fr}
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div class="topbar">
-        <div class="brand">PC <span>Titan Ultra</span></div>
-        <div class="cta-mini">
-          <span class="pill">Envío 24/48h</span>
-          <span class="pill">Garantía Real</span>
-          <a class="whatsapp" href="https://wa.me/5491112345678?text=Hola%20quiero%20armar%20mi%20PC%20pro" target="_blank" rel="noopener noreferrer">WhatsApp Ventas</a>
-        </div>
-      </div>
-
-      <section class="hero">
-        <article class="hero-left">
-          <h1>La tienda más pro de accesorios y componentes PC</h1>
-          <p class="sub">Todo lo que pediste: productos premium con fotos reales, catálogo completo por categorías, compras por WhatsApp y cuotas con bancos. Armá tu setup gamer/profesional mejor que en cualquier otra tienda.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#catalogo">Ver catálogo completo</a>
-            <a class="btn btn-ghost" href="#cuotas">Ver cuotas y bancos</a>
-          </div>
-        </article>
-        <aside class="hero-right">
-          <div class="quick"><strong>+500</strong><span>componentes disponibles</span></div>
-          <div class="quick"><strong>12</strong><span>categorías top</span></div>
-          <div class="quick"><strong>18</strong><span>bancos con cuotas</span></div>
-          <div class="quick"><strong>24/7</strong><span>atención por WhatsApp</span></div>
-        </aside>
-      </section>
-    </header>
-
-    <section id="catalogo" class="section">
-      <h2>🔥 Catálogo Pro (Accesorios + Componentes)</h2>
-      <div class="filters">
-        <span>CPU</span><span>GPU</span><span>RAM</span><span>Motherboards</span><span>Monitores</span><span>Periféricos</span><span>Gabinetes</span><span>Fuentes</span><span>Storage</span>
-      </div>
-
-      <div class="grid">
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1591799265444-d66432b91588?auto=format&fit=crop&w=800&q=80" alt="Placa de video de alta gama" />
-          <div class="card-body"><span class="tag">GPU</span><h3>RTX Ultra X 5090 24GB</h3><p>Ray tracing extremo y DLSS para 4K competitivo.</p><div class="meta"><span class="price">USD 2,399</span><span>Stock: 12</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1587202372775-9893f1f582a9?auto=format&fit=crop&w=800&q=80" alt="Procesador premium" />
-          <div class="card-body"><span class="tag">CPU</span><h3>Ryzen 9 X3D Elite</h3><p>Máximo rendimiento gaming y creación de contenido.</p><div class="meta"><span class="price">USD 899</span><span>Stock: 25</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?auto=format&fit=crop&w=800&q=80" alt="Memorias RAM RGB" />
-          <div class="card-body"><span class="tag">RAM</span><h3>DDR5 64GB 7200MHz RGB</h3><p>Latencia ultra baja, ideal para edición y streaming pro.</p><div class="meta"><span class="price">USD 429</span><span>Stock: 40</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1624705013726-8f25ed0b2694?auto=format&fit=crop&w=800&q=80" alt="Monitor gamer OLED" />
-          <div class="card-body"><span class="tag">Monitor</span><h3>OLED 32" 4K 240Hz</h3><p>Color profesional + velocidad eSports en un solo panel.</p><div class="meta"><span class="price">USD 1,599</span><span>Stock: 8</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1616296425622-4560a2ad83de?auto=format&fit=crop&w=800&q=80" alt="Teclado mecánico" />
-          <div class="card-body"><span class="tag">Periférico</span><h3>Teclado Mecánico Carbon Pro</h3><p>Switch óptico, 0.2ms y estructura de aluminio CNC.</p><div class="meta"><span class="price">USD 399</span><span>Stock: 31</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=800&q=80" alt="Mouse gaming" />
-          <div class="card-body"><span class="tag">Periférico</span><h3>Mouse 8K Pro Wireless</h3><p>39g ultraligero, batería de larga duración y precisión total.</p><div class="meta"><span class="price">USD 289</span><span>Stock: 54</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1587202372616-b43abea06c2a?auto=format&fit=crop&w=800&q=80" alt="Placa madre de alta gama" />
-          <div class="card-body"><span class="tag">Motherboard</span><h3>Z990 Creator Extreme</h3><p>PCIe 5.0, WiFi 7 y VRM preparado para overclock pro.</p><div class="meta"><span class="price">USD 749</span><span>Stock: 20</span></div></div>
-        </article>
-        <article class="card">
-          <img src="https://images.unsplash.com/photo-1591489378430-ef2f4c626b35?auto=format&fit=crop&w=800&q=80" alt="Gabinete con RGB" />
-          <div class="card-body"><span class="tag">Gabinete</span><h3>Case Infinity Glass XL</h3><p>Flujo de aire premium, espacio full tower y vidrio templado.</p><div class="meta"><span class="price">USD 319</span><span>Stock: 18</span></div></div>
-        </article>
-      </div>
-    </section>
-
-    <section id="cuotas" class="section banks">
-      <article class="panel">
-        <h2>💳 Cuotas y Bancos</h2>
-        <table>
-          <thead><tr><th>Banco</th><th>Cuotas</th><th>Beneficio</th></tr></thead>
-          <tbody>
-            <tr><td>Galicia</td><td>6 / 12</td><td class="ok">Hasta 20% OFF</td></tr>
-            <tr><td>BBVA</td><td>3 / 6 / 12</td><td class="ok">Sin interés en viernes</td></tr>
-            <tr><td>Santander</td><td>6 / 9</td><td class="ok">15% reintegro</td></tr>
-            <tr><td>Macro</td><td>3 / 6</td><td class="ok">10% OFF gamer</td></tr>
-            <tr><td>Provincia</td><td>12 / 18</td><td class="ok">Plan especial setup</td></tr>
-            <tr><td>Nación</td><td>6 / 12</td><td class="ok">Cuota fija promocional</td></tr>
-          </tbody>
-        </table>
-      </article>
-
-      <article class="panel wa-box">
-        <h2>📲 Comprá por WhatsApp (rápido)</h2>
-        <p>Mandanos lista de componentes, presupuesto y uso (gaming/edición/stream). Te respondemos con armado completo, alternativas y financiación banco por banco.</p>
-        <a class="whatsapp" href="https://wa.me/5491112345678?text=Hola%20quiero%20cotizacion%20completa%20de%20PC%20gamer%20pro" target="_blank" rel="noopener noreferrer">Ir a WhatsApp ahora</a>
-        <p><strong>Atención:</strong> todos los días, 24/7 · Ventas · Postventa · Garantías.</p>
-      </article>
-    </section>
-
-    <footer>
-      © 2026 PC Titan Ultra · Tu tienda pro de componentes, accesorios, cuotas y armado premium.
-    </footer>
-  </div>
-</body>
-</html>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PC Titan Ultra Pro Store</title><style>
+:root {
+  --bg:#060912;--bg2:#0b1122;--card:#121a31;--line:rgba(170,190,230,.25);
+  --text:#edf4ff;--muted:#9fb3d8;--primary:#04e5ff;--secondary:#8a6dff;--ok:#2ef2a6;--gold:#ffd45b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at 10% -10%,#26437a 0,#0b1225 35%,var(--bg) 75%);color:var(--text);line-height:1.55}
+.container{width:min(1400px,95vw);margin:auto}
+header{padding:1.2rem 0}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;background:rgba(9,14,28,.7);backdrop-filter:blur(8px);border:1px solid var(--line);padding:.8rem 1rem;border-radius:14px;position:sticky;top:.8rem;z-index:8}
+.brand{font-size:1.4rem;font-weight:900}.brand span{color:var(--primary)}
+.navlinks{display:flex;gap:.5rem;flex-wrap:wrap}.navlinks a{color:#d8e8ff;text-decoration:none;border:1px solid var(--line);padding:.42rem .7rem;border-radius:999px;font-size:.85rem}
+.cta{display:inline-block;background:linear-gradient(90deg,#26d366,#14b663);color:#032312;text-decoration:none;font-weight:800;padding:.5rem .9rem;border-radius:10px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;margin-top:1rem}
+.panel{background:linear-gradient(160deg,#121b33,#0b1223);border:1px solid var(--line);border-radius:16px;box-shadow:0 15px 35px rgba(0,0,0,.35)}
+.hero-main{padding:1.4rem}.hero-main h1{font-size:clamp(1.8rem,3.8vw,3.2rem);line-height:1.12;margin-bottom:.7rem}
+.hero-main p{color:var(--muted);max-width:74ch}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}.btn{display:inline-block;padding:.62rem .95rem;border-radius:10px;text-decoration:none;font-weight:700}
+.btn-primary{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#071225}.btn-outline{border:1px solid var(--line);color:#d9e8ff}
+.stats{padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.stat{background:#0f1730;border:1px solid var(--line);border-radius:12px;padding:.7rem}.stat strong{display:block;color:var(--primary);font-size:1.2rem}
+section{margin:1.25rem 0}.section-title{font-size:1.5rem;margin-bottom:.6rem}
+.subline{color:var(--muted);margin-bottom:.9rem}
+.catbar{display:flex;gap:.45rem;flex-wrap:wrap}.catbar span{border:1px solid var(--line);padding:.3rem .65rem;border-radius:999px;font-size:.8rem;color:#d4e4ff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.9rem;margin-top:.9rem}
+.card{background:linear-gradient(160deg,var(--card),#0b1120);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.card img{width:100%;height:180px;object-fit:cover}
+.card .body{padding:.8rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
+.tag{font-size:.72rem;color:#94f5ff;background:rgba(4,229,255,.12);border:1px solid rgba(4,229,255,.4);padding:.15rem .45rem;border-radius:999px;width:max-content}
+.card h3{font-size:1rem}.card p{font-size:.88rem;color:var(--muted)}
+.specs{font-size:.8rem;color:#c7daf8;display:grid;gap:.15rem;margin-top:.2rem}
+.meta{margin-top:auto;padding-top:.55rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:.4rem;flex-wrap:wrap}
+.price{font-weight:900;color:var(--gold)}
+.buy{background:linear-gradient(90deg,var(--primary),var(--secondary));color:#041427;text-decoration:none;padding:.42rem .7rem;border-radius:8px;font-weight:800;font-size:.82rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:.5rem .35rem;border-bottom:1px dashed rgba(170,190,230,.22);text-align:left}th{color:#dbe8ff}td{color:#c0d1ef}.ok{color:var(--ok);font-weight:700}
+.list{display:grid;gap:.5rem}.list li{margin-left:1rem;color:#c5d7f7}
+footer{margin:1.5rem 0 2rem;border-top:1px solid var(--line);padding-top:1rem;text-align:center;color:var(--muted)}
+@media(max-width:980px){.hero,.two{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}
+</style></head><body><div class="container">
+<header><nav class="nav"><div class="brand">PC <span>Titan Ultra</span></div><div class="navlinks"><a href="#catalogo">Catálogo</a><a href="#bancos">Cuotas</a><a href="#armados">Armados</a><a href="#faq">FAQ</a></div><a class="cta" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20componentes%20PC%20pro">WhatsApp Ventas</a></nav>
+<section class="hero"><article class="hero-main panel"><h1>Ahora sí: tienda pro REAL, completa y lista para vender</h1><p>Mejoramos la página para que no sea solo "linda": ahora los botones llevan a acciones reales, el catálogo tiene muchísimos componentes con información útil, secciones de cuotas por banco, packs armados, asesoría por WhatsApp y detalles de compra/postventa.</p><div class="row"><a class="btn btn-primary" href="#catalogo">Explorar +500 productos</a><a class="btn btn-outline" href="#bancos">Ver cuotas por banco</a><a class="btn btn-outline" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Necesito%20una%20PC%20completa%20gamer%20y%20edicion">Cotizar por WhatsApp</a></div></article><aside class="stats panel"><div class="stat"><strong>+500</strong><span>componentes y accesorios</span></div><div class="stat"><strong>+18</strong><span>bancos con promos</span></div><div class="stat"><strong>24/7</strong><span>atención comercial</span></div><div class="stat"><strong>48h</strong><span>envío prioritario</span></div></aside></section></header>
+<section id="catalogo"><h2 class="section-title">Catálogo profesional por categoría</h2><p class="subline">Fotos, descripción, especificaciones rápidas, precio y botón de compra por WhatsApp por cada componente.</p><div class="catbar"><span>GPU</span><span>CPU</span><span>Motherboard</span><span>RAM</span><span>Storage</span><span>Cooling</span><span>Fuente</span><span>Gabinete</span><span>Monitor</span><span>Periféricos</span><span>Streaming</span><span>Mobiliario</span></div><div class="grid">
+<article class="card"><img src="https://images.unsplash.com/photo-1591799265444-d66432b91588?auto=format&fit=crop&w=1200&q=80" alt="NVIDIA GeForce RTX 4090 SUPRIM X 24GB"><div class="body"><span class="tag">GPU</span><h3>NVIDIA GeForce RTX 4090 SUPRIM X 24GB</h3><p>Rendimiento extremo 4K/8K, DLSS 3.5, triple fan premium y backplate reforzado.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 2,899</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20NVIDIA%20GeForce%20RTX%204090%20SUPRIM%20X%2024GB">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1200&q=80" alt="AMD Radeon RX 7900 XTX Nitro+ 24GB"><div class="body"><span class="tag">GPU</span><h3>AMD Radeon RX 7900 XTX Nitro+ 24GB</h3><p>Top gama AMD para rasterización bestial y VRAM de sobra para producción y gaming.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 1,499</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20AMD%20Radeon%20RX%207900%20XTX%20Nitro+%2024GB">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1587202372775-9893f1f582a9?auto=format&fit=crop&w=1200&q=80" alt="Intel Core i9-14900KS"><div class="body"><span class="tag">CPU</span><h3>Intel Core i9-14900KS</h3><p>24 núcleos híbridos, boost extremo y performance brutal para streaming + gaming.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 999</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Intel%20Core%20i9-14900KS">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=1200&q=80" alt="AMD Ryzen 9 9950X3D"><div class="body"><span class="tag">CPU</span><h3>AMD Ryzen 9 9950X3D</h3><p>3D V-Cache para FPS máximos, multitarea premium y productividad sin límites.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 1,099</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20AMD%20Ryzen%209%209950X3D">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1587202372616-b43abea06c2a?auto=format&fit=crop&w=1200&q=80" alt="ASUS ROG Crosshair X670E Extreme"><div class="body"><span class="tag">Motherboard</span><h3>ASUS ROG Crosshair X670E Extreme</h3><p>PCIe 5.0, VRM robusto, WiFi 7 y audio de estudio para setups profesionales.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 899</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20ASUS%20ROG%20Crosshair%20X670E%20Extreme">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?auto=format&fit=crop&w=1200&q=80" alt="Corsair Dominator Titanium DDR5 64GB 7200"><div class="body"><span class="tag">RAM</span><h3>Corsair Dominator Titanium DDR5 64GB 7200</h3><p>Baja latencia, disipación premium y RGB calibrado para máxima estabilidad.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 469</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Corsair%20Dominator%20Titanium%20DDR5%2064GB%207200">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=1200&q=80" alt="Samsung 990 Pro 4TB NVMe Gen4"><div class="body"><span class="tag">Storage</span><h3>Samsung 990 Pro 4TB NVMe Gen4</h3><p>Lectura secuencial ultra rápida para edición 8K, juegos pesados y cargas instantáneas.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 449</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Samsung%20990%20Pro%204TB%20NVMe%20Gen4">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=1200&q=80" alt="NZXT Kraken Elite 360 RGB"><div class="body"><span class="tag">Cooling</span><h3>NZXT Kraken Elite 360 RGB</h3><p>Refrigeración líquida con pantalla personalizable y bomba de alto rendimiento.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 349</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20NZXT%20Kraken%20Elite%20360%20RGB">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1580894908361-967195033215?auto=format&fit=crop&w=1200&q=80" alt="Seasonic PRIME TX-1300 Titanium"><div class="body"><span class="tag">PSU</span><h3>Seasonic PRIME TX-1300 Titanium</h3><p>Fuente 80 Plus Titanium, eficiencia máxima y estabilidad eléctrica de élite.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 529</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Seasonic%20PRIME%20TX-1300%20Titanium">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1591489378430-ef2f4c626b35?auto=format&fit=crop&w=1200&q=80" alt="Lian Li O11 Dynamic EVO XL"><div class="body"><span class="tag">Case</span><h3>Lian Li O11 Dynamic EVO XL</h3><p>Gabinete premium con airflow optimizado, vidrio templado y cableado limpio.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 299</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Lian%20Li%20O11%20Dynamic%20EVO%20XL">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1624705013726-8f25ed0b2694?auto=format&fit=crop&w=1200&q=80" alt="ASUS ROG Swift OLED 32p 4K 240Hz"><div class="body"><span class="tag">Monitor</span><h3>ASUS ROG Swift OLED 32p 4K 240Hz</h3><p>OLED de referencia con negros perfectos y respuesta instantánea eSports.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 1,999</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20ASUS%20ROG%20Swift%20OLED%2032"%204K%20240Hz">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1616296425622-4560a2ad83de?auto=format&fit=crop&w=1200&q=80" alt="Wooting 80HE"><div class="body"><span class="tag">Keyboard</span><h3>Wooting 80HE</h3><p>Teclado magnético analógico con Rapid Trigger para ventaja competitiva real.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 329</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Wooting%2080HE">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&fit=crop&w=1200&q=80" alt="Razer Viper V3 Pro 8K"><div class="body"><span class="tag">Mouse</span><h3>Razer Viper V3 Pro 8K</h3><p>Mouse ultraligero con sensor flagship y polling 8000Hz para precisión absoluta.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 219</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Razer%20Viper%20V3%20Pro%208K">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=1200&q=80" alt="Audeze Maxwell Wireless"><div class="body"><span class="tag">Headset</span><h3>Audeze Maxwell Wireless</h3><p>Audio planar magnético con calidad audiófila + micrófono de voz nítida.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 429</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Audeze%20Maxwell%20Wireless">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=1200&q=80" alt="Secretlab TITAN Evo XL"><div class="body"><span class="tag">Chair</span><h3>Secretlab TITAN Evo XL</h3><p>Ergonomía premium de largo plazo con soporte lumbar 4D y materiales top.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 749</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Secretlab%20TITAN%20Evo%20XL">Comprar</a></div></div></article>
+<article class="card"><img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?auto=format&fit=crop&w=1200&q=80" alt="Elgato Facecam Pro 4K60"><div class="body"><span class="tag">Webcam</span><h3>Elgato Facecam Pro 4K60</h3><p>Webcam profesional para streamers con imagen limpia, color fiel y poca latencia.</p><div class="specs"><span>• Garantía oficial 12 meses</span><span>• Testeado antes de despacho</span><span>• Compatibilidad asistida por chat</span></div><div class="meta"><span class="price">USD 339</span><a class="buy" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Hola%20quiero%20comprar%20Elgato%20Facecam%20Pro%204K60">Comprar</a></div></div></article>
+</div></section>
+<section id="armados" class="two"><article class="panel" style="padding:1rem"><h2 class="section-title">Packs armados (listos para usar)</h2><ul class="list"><li><strong>Starter Gamer 1080p</strong>: Ryzen 5 + RTX 4060 + 16GB + SSD 1TB.</li><li><strong>Pro Gamer 1440p</strong>: Ryzen 7 + RTX 4070 Ti Super + 32GB + SSD 2TB.</li><li><strong>Creator 4K</strong>: i9/Ryzen9 + RTX 4090 + 64GB + NVMe 4TB.</li><li><strong>Streaming Max</strong>: doble captura, mic pro, cámara 4K y luces.</li><li><strong>Workstation IA</strong>: VRAM alta + CPU multinúcleo + refrigeración premium.</li></ul><div class="row"><a class="btn btn-primary" target="_blank" rel="noopener" href="https://wa.me/5491112345678?text=Quiero%20cotizar%20un%20pack%20armado">Pedir cotización inmediata</a></div></article><article id="bancos" class="panel" style="padding:1rem"><h2 class="section-title">Cuotas y bancos</h2><table><thead><tr><th>Banco</th><th>Cuotas</th><th>Beneficio</th></tr></thead><tbody><tr><td>Galicia</td><td>6 / 12</td><td class="ok">20% OFF tope alto</td></tr><tr><td>BBVA</td><td>3 / 6 / 12</td><td class="ok">Sin interés viernes</td></tr><tr><td>Santander</td><td>6 / 9 / 12</td><td class="ok">15% reintegro</td></tr><tr><td>Macro</td><td>3 / 6</td><td class="ok">10% OFF gamer</td></tr><tr><td>Provincia</td><td>12 / 18</td><td class="ok">Promo setup completo</td></tr><tr><td>Nación</td><td>6 / 12</td><td class="ok">Cuota fija</td></tr><tr><td>ICBC</td><td>3 / 6 / 9</td><td class="ok">Cashback mensual</td></tr><tr><td>HSBC</td><td>6 / 12</td><td class="ok">Descuento online</td></tr></tbody></table></article></section>
+<section id="faq" class="panel" style="padding:1rem"><h2 class="section-title">Preguntas frecuentes (compra real)</h2><div class="grid"><article class="card"><div class="body"><h3>¿Los botones funcionan?</h3><p>Sí. Todos los botones de compra abren WhatsApp con el producto precargado para que cierres pedido directo.</p></div></article><article class="card"><div class="body"><h3>¿Hacen armado completo?</h3><p>Sí. Nos pasás presupuesto/objetivo y te enviamos propuesta con compatibilidad verificada y alternativas.</p></div></article><article class="card"><div class="body"><h3>¿Envían a todo el país?</h3><p>Sí, con opciones estándar y express, embalaje reforzado y seguimiento.</p></div></article><article class="card"><div class="body"><h3>¿Qué pasa con garantía?</h3><p>Gestionamos RMA y soporte postventa para componentes y equipos armados.</p></div></article></div></section>
+<footer>© 2026 PC Titan Ultra · Catálogo premium + compra por WhatsApp + cuotas por banco. Diseñado para vender de verdad.</footer></div></body></html>
