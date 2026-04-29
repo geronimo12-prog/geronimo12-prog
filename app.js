@@ -1,3 +1,7 @@
+window.addEventListener("error", (e) => {
+  console.error("JS ERROR:", e.message);
+});
+
 
 let safeProducts = [];
 let currentCategory = 'todas';
@@ -6,7 +10,7 @@ const $ = (s) => document.querySelector(s);
 const fmt = (n) => new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n || 0);
 
 function renderProducts(list) {
-  const grid = $('#productGrid');
+  const grid = document.getElementById('products') || $('#products') || $('#productGrid');
   if (!grid) return;
   if (!Array.isArray(list) || !list.length) {
     grid.innerHTML = '<p>No hay productos para mostrar.</p>';
@@ -50,17 +54,17 @@ function bindBaseUI(){
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
-    if (typeof products !== "undefined") {
+    if (typeof products !== "undefined" && products.length > 0) {
       safeProducts = Array.isArray(products) ? products : [];
       initCategories();
       renderProducts(safeProducts);
       bindBaseUI();
     } else {
-      console.error("products no está definido");
+      console.error("Productos no cargados");
       renderProducts([]);
     }
   } catch (e) {
     console.error("Error renderizando productos:", e);
-    try { renderProducts(Array.isArray(products) ? products : []); } catch (_) {}
+    try { renderProducts(Array.isArray(products) ? products : []); } catch (_) { const c = document.getElementById("products"); if(c) c.innerHTML = "<p>Error cargando productos.</p>"; }
   }
 });
