@@ -3,47 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HardCore Store | Hardware PC</title>
+  <title>Santa Fe Sport Pro | Tienda Deportiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="navbar">
-    <div class="logo">HardCore <span>Store</span></div>
-    <div class="search-wrap">
-      <input id="searchInput" type="text" placeholder="Buscar: RTX 3060, Ryzen 5600X..." />
+    <a class="logo" href="#inicio"><i class="fa-solid fa-bolt"></i> Santa Fe <span>Sport Pro</span></a>
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#productos">Productos</a>
+      <a href="#ofertas">Ofertas</a>
+      <a href="#nosotros">Quiénes somos</a>
+      <a href="#contacto">Contacto</a>
+      <a href="#ubicacion">Ubicación</a>
+    </nav>
+    <div class="nav-tools">
+      <input id="searchInput" type="text" placeholder="Buscar camisetas, botines..." />
+      <button id="cartToggle" class="cart-btn"><i class="fa-solid fa-cart-shopping"></i><span id="cartCount">0</span></button>
     </div>
   </header>
 
-  <section class="hero">
+  <section id="inicio" class="hero reveal">
     <div class="hero-content">
-      <h1>Tu tienda gamer de componentes reales</h1>
-      <p>Armá tu PC ideal con componentes de verdad, precios claros y carrito funcional.</p>
-      <a href="#productos" class="btn-primary">Ver catálogo</a>
+      <h1>Equipate como un profesional</h1>
+      <p>La tienda deportiva más completa de Santa Fe: camisetas oficiales, botines de elite, pelotas y accesorios.</p>
+      <a href="#productos" class="btn-primary">Explorar catálogo</a>
     </div>
   </section>
 
   <main class="container">
-    <section class="controls">
-      <h2>Categorías</h2>
-      <div id="categoryFilters" class="chips"></div>
-    </section>
-
-    <section id="productos">
-      <h2>Productos destacados</h2>
-      <div id="productGrid" class="product-grid"></div>
-    </section>
-
-    <aside class="cart-panel">
-      <h2>Carrito</h2>
-      <div id="cartItems" class="cart-items"></div>
-      <div class="cart-footer">
-        <strong>Total: <span id="cartTotal">USD 0</span></strong>
+    <section id="productos" class="panel reveal">
+      <div class="section-head">
+        <h2>Productos</h2>
+        <div class="filters">
+          <select id="categoryFilter"></select>
+          <select id="sortFilter">
+            <option value="featured">Destacados</option>
+            <option value="price-asc">Precio: menor a mayor</option>
+            <option value="price-desc">Precio: mayor a menor</option>
+            <option value="name">Nombre A-Z</option>
+          </select>
+        </div>
       </div>
-    </aside>
+      <div id="productGrid" class="grid"></div>
+    </section>
+
+    <section id="ofertas" class="panel reveal">
+      <h2>Ofertas destacadas</h2>
+      <div class="offers">
+        <article><h3>2x1 en shorts seleccionados</h3><p>Solo esta semana en marcas Nike y Adidas.</p></article>
+        <article><h3>15% OFF en camisetas titulares</h3><p>River, Boca y Selección Argentina.</p></article>
+        <article><h3>Hasta 6 cuotas sin interés</h3><p>Con bancos adheridos en Santa Fe.</p></article>
+      </div>
+    </section>
+
+    <section id="nosotros" class="panel reveal">
+      <h2>Quiénes somos</h2>
+      <p>Somos una tienda nacida en Santa Fe con más de 10 años en indumentaria y equipamiento deportivo. Trabajamos con productos originales, asesoría personalizada y envíos seguros a toda la provincia.</p>
+    </section>
+
+    <section id="contacto" class="panel reveal">
+      <h2>Contacto</h2>
+      <form id="contactForm" class="contact-form" novalidate>
+        <input type="text" id="name" placeholder="Nombre" required />
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="tel" id="phone" placeholder="Teléfono" required />
+        <textarea id="message" rows="4" placeholder="Mensaje" required></textarea>
+        <button type="submit" class="btn-primary">Enviar consulta</button>
+      </form>
+      <p id="formMsg" class="form-msg"></p>
+    </section>
+
+    <section id="ubicacion" class="panel reveal">
+      <h2>Ubicación</h2>
+      <p><strong>Dirección:</strong> Av. General López 2450, Santa Fe Capital, Argentina</p>
+      <p><strong>Horario:</strong> Lunes a Sábado de 9:00 a 18:00</p>
+      <p><strong>Teléfono:</strong> +54 342 555-0198</p>
+      <p><strong>Email:</strong> ventas@santafesportpro.com.ar</p>
+      <iframe title="Mapa Santa Fe" src="https://www.google.com/maps?q=Santa+Fe+Argentina&output=embed" loading="lazy"></iframe>
+    </section>
   </main>
 
+  <aside id="cartPanel" class="cart-panel">
+    <h3>Carrito</h3>
+    <div id="cartItems"></div>
+    <div class="cart-total">Total: <strong id="cartTotal">ARS $0</strong></div>
+  </aside>
+
+  <a id="whatsappBtn" class="whatsapp-float" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
+  <div id="toast" class="toast"></div>
+
   <footer>
-    <p>HardCore Store · Ecommerce demo estilo Compra Gamer / Maximus con catálogo dinámico y carrito interactivo.</p>
+    <div>
+      <h4>Santa Fe Sport Pro</h4>
+      <p>Tienda deportiva profesional en Santa Fe.</p>
+    </div>
+    <div>
+      <p>© 2026 · Todos los derechos reservados</p>
+    </div>
   </footer>
 
   <script src="data.js"></script>

@@ -1,118 +1,137 @@
-// Estado principal de la tienda.
 const state = {
-  category: 'Todas',
-  search: '',
-  cart: []
+  products: PRODUCTS,
+  filtered: PRODUCTS,
+  cart: JSON.parse(localStorage.getItem('sf_cart') || '[]'),
+  category: 'Todas'
 };
 
-const $ = (selector) => document.querySelector(selector);
-const fmtPrice = (value) => `USD ${value.toLocaleString('en-US')}`;
+const $ = (s) => document.querySelector(s);
+const fmtARS = (n) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
 
-function categoriesFromData() {
-  return ['Todas', ...new Set(PRODUCTS.map((p) => p.category))];
+function initCategories() {
+  const categories = ['Todas', ...new Set(PRODUCTS.map(p => p.category))];
+  $('#categoryFilter').innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 }
 
-function renderCategoryFilters() {
-  const container = $('#categoryFilters');
-  container.innerHTML = categoriesFromData()
-    .map((cat) => `<button class="chip ${cat === state.category ? 'active' : ''}" data-category="${cat}">${cat}</button>`)
-    .join('');
+function applyFilters() {
+  const q = $('#searchInput').value.toLowerCase().trim();
+  const cat = $('#categoryFilter').value;
+  const sort = $('#sortFilter').value;
 
-  container.querySelectorAll('[data-category]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.category = btn.dataset.category;
-      renderAll();
-    });
+  let items = PRODUCTS.filter(p => {
+    const byCat = cat === 'Todas' || p.category === cat;
+    const byText = `${p.name} ${p.description}`.toLowerCase().includes(q);
+    return byCat && byText;
   });
-}
 
-function filteredProducts() {
-  return PRODUCTS.filter((p) => {
-    const byCategory = state.category === 'Todas' || p.category === state.category;
-    const bySearch = `${p.name} ${p.description}`.toLowerCase().includes(state.search.toLowerCase());
-    return byCategory && bySearch;
-  });
+  if (sort === 'price-asc') items.sort((a,b)=>a.price-b.price);
+  if (sort === 'price-desc') items.sort((a,b)=>b.price-a.price);
+  if (sort === 'name') items.sort((a,b)=>a.name.localeCompare(b.name));
+
+  state.filtered = items;
+  renderProducts();
 }
 
 function renderProducts() {
   const grid = $('#productGrid');
-  const products = filteredProducts();
+  if (!state.filtered.length) return grid.innerHTML = '<p>No hay resultados.</p>';
 
-  if (!products.length) {
-    grid.innerHTML = '<p>No se encontraron productos con ese filtro.</p>';
-    return;
-  }
-
-  grid.innerHTML = products
-    .map(
-      (p, i) => `
-      <article class="card" style="animation-delay:${i * 45}ms">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
-        <div class="card-body">
-          <small>${p.category}</small>
-          <h3>${p.name}</h3>
-          <p>${p.description}</p>
-          <div class="price-row">
-            <span class="price">${fmtPrice(p.price)}</span>
-            <button class="btn-add" data-id="${p.id}">Agregar al carrito</button>
-          </div>
+  grid.innerHTML = state.filtered.map((p, i) => `
+    <article class="card" style="animation:fadeUp .45s ease ${i*30}ms both">
+      <img src="${p.image}" alt="${p.name}" loading="lazy" />
+      <div class="card-body">
+        <small>${p.category}</small>
+        <h3>${p.name}</h3>
+        <p>${p.description}</p>
+        <div class="row">
+          <span class="price">${fmtARS(p.price)}</span>
+          <button class="btn-add" data-add="${p.id}">Agregar</button>
         </div>
-      </article>`
-    )
-    .join('');
+      </div>
+    </article>
+  `).join('');
 
-  grid.querySelectorAll('[data-id]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const product = PRODUCTS.find((p) => p.id === Number(btn.dataset.id));
-      state.cart.push(product);
-      renderCart();
-    });
-  });
+  document.querySelectorAll('[data-add]').forEach(btn => btn.addEventListener('click', () => {
+    const prod = PRODUCTS.find(p => p.id === Number(btn.dataset.add));
+    state.cart.push(prod);
+    persistCart();
+    renderCart();
+    showToast(`${prod.name} agregado al carrito`);
+  }));
 }
 
 function renderCart() {
-  const cartItems = $('#cartItems');
-  const total = state.cart.reduce((sum, p) => sum + p.price, 0);
+  const wrap = $('#cartItems');
+  const total = state.cart.reduce((acc,p)=>acc+p.price,0);
+  $('#cartCount').textContent = state.cart.length;
+  $('#cartTotal').textContent = fmtARS(total);
 
-  if (!state.cart.length) {
-    cartItems.innerHTML = '<p>El carrito está vacío.</p>';
-    $('#cartTotal').textContent = fmtPrice(0);
-    return;
-  }
+  if (!state.cart.length) return wrap.innerHTML = '<p>Tu carrito está vacío.</p>';
 
-  cartItems.innerHTML = state.cart
-    .map(
-      (item, index) => `
-      <div class="cart-item">
-        <strong>${item.name}</strong>
-        <span>${fmtPrice(item.price)}</span>
-        <button class="btn-remove" data-remove="${index}">Quitar</button>
-      </div>`
-    )
-    .join('');
+  wrap.innerHTML = state.cart.map((item, idx) => `
+    <div class="cart-item">
+      <strong>${item.name}</strong>
+      <div>${fmtARS(item.price)}</div>
+      <button data-remove="${idx}">Quitar</button>
+    </div>
+  `).join('');
 
-  $('#cartTotal').textContent = fmtPrice(total);
+  wrap.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => {
+    state.cart.splice(Number(btn.dataset.remove), 1);
+    persistCart();
+    renderCart();
+  }));
 
-  cartItems.querySelectorAll('[data-remove]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.cart.splice(Number(btn.dataset.remove), 1);
-      renderCart();
-    });
+  updateWhatsAppLink();
+}
+
+function updateWhatsAppLink() {
+  const total = state.cart.reduce((acc,p)=>acc+p.price,0);
+  const list = state.cart.map((p,i)=>`${i+1}. ${p.name} - ${fmtARS(p.price)}`).join('\n');
+  const text = state.cart.length
+    ? `Hola, quiero comprar estos productos:%0A${encodeURIComponent(list)}%0A%0ATotal: ${encodeURIComponent(fmtARS(total))}`
+    : 'Hola, quiero consultar productos deportivos.';
+  $('#whatsappBtn').href = `https://wa.me/5493425550198?text=${text}`;
+}
+
+function persistCart() {
+  localStorage.setItem('sf_cart', JSON.stringify(state.cart));
+}
+
+function showToast(message) {
+  const toast = $('#toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1700);
+}
+
+function bindUI() {
+  $('#searchInput').addEventListener('input', applyFilters);
+  $('#categoryFilter').addEventListener('change', applyFilters);
+  $('#sortFilter').addEventListener('change', applyFilters);
+  $('#cartToggle').addEventListener('click', () => $('#cartPanel').classList.toggle('open'));
+
+  $('#contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fields = ['#name', '#email', '#phone', '#message'].map(id => $(id));
+    const valid = fields.every(f => f.value.trim().length >= 3);
+    if (!valid) return $('#formMsg').textContent = 'Completá correctamente todos los campos.';
+    $('#formMsg').textContent = '¡Consulta enviada! Te responderemos pronto.';
+    e.target.reset();
   });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('visible'));
+  }, { threshold: .15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 }
 
-function bindSearch() {
-  $('#searchInput').addEventListener('input', (event) => {
-    state.search = event.target.value.trim();
-    renderProducts();
-  });
+function init() {
+  initCategories();
+  bindUI();
+  applyFilters();
+  renderCart();
+  updateWhatsAppLink();
 }
 
-function renderAll() {
-  renderCategoryFilters();
-  renderProducts();
-}
-
-bindSearch();
-renderAll();
-renderCart();
+init();
