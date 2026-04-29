@@ -1,17 +1,2 @@
-const COUPONS = {
-  SPORT10: { type: 'general', percent: 10 },
-  RIVER15: { type: 'river', percent: 15 },
-  BIENVENIDO20: { type: 'first_purchase', percent: 20 }
-};
-
-function validateCoupon(code, cart, currentUser) {
-  const coupon = COUPONS[code];
-  if (!coupon) return { ok: false, message: 'Cupón inválido.' };
-  if (coupon.type === 'first_purchase' && currentUser?.orders > 0) {
-    return { ok: false, message: 'BIENVENIDO20 solo primera compra.' };
-  }
-  if (coupon.type === 'river' && !cart.some(i => (i.team || '').toLowerCase() === 'river')) {
-    return { ok: false, message: 'RIVER15 requiere camisetas River en carrito.' };
-  }
-  return { ok: true, coupon };
-}
+const Coupons={SPORT10:{t:'all',p:10},RIVER15:{t:'river',p:15},BIENVENIDO20:{t:'first',p:20}};
+Coupons.apply=(code,cart,user)=>{const c=Coupons[code];if(!c)return{ok:false,m:'Cupón inválido'};if(c.t==='river'&&!cart.some(i=>i.team==='river'))return{ok:false,m:'Requiere River'};if(c.t==='first'&&user&&user.orders>0)return{ok:false,m:'Solo primera compra'};return{ok:true,c};};

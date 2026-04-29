@@ -1,8 +1,2 @@
-function withDiscounts(products) {
-  return products.map(p => {
-    const rule = DISCOUNTS.find(d => d.productId === p.id);
-    if (!rule) return { ...p, finalPrice: p.price, discountPercent: 0 };
-    const finalPrice = Math.round(p.price * (1 - rule.percent / 100));
-    return { ...p, finalPrice, discountPercent: rule.percent };
-  });
-}
+const Discounts={rules:{camisetas:10,botines:8}};
+Discounts.final=(p,coupon)=>{let price=p.price;const cat=Discounts.rules[p.category]||0;price=Math.round(price*(1-cat/100));if(coupon?.t==='all')price=Math.round(price*(1-coupon.p/100));if(coupon?.t==='river'&&p.team==='river')price=Math.round(price*(1-coupon.p/100));if(coupon?.t==='first')price=Math.round(price*(1-coupon.p/100));return price;};
