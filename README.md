@@ -1,16 +1,15 @@
-## Hi there 👋
+# SF Inmobiliaria Platform
 
-<!--
-**geronimo12-prog/geronimo12-prog** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+## Frontend
+```bash
+npm install
+npm run dev
+```
 
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Backend (Express + MongoDB)
+```bash
+cd server
+npm install
+npm run dev
+```
+API base: `http://localhost:4000/api`
