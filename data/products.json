@@ -1,0 +1,27 @@
+{
+  "products": [
+    {"id":"gpu-4090","name":"RTX 4090 SUPRIM X 24GB","category":"GPU","price":2899,"image":"assets/img/gpu.svg","description":"4K/8K extremo con DLSS 3.5 y refrigeración premium."},
+    {"id":"gpu-7900","name":"RX 7900 XTX Nitro+ 24GB","category":"GPU","price":1499,"image":"assets/img/gpu.svg","description":"Potencia AMD tope de gama para gaming y render."},
+    {"id":"cpu-9950x3d","name":"Ryzen 9 9950X3D","category":"CPU","price":1099,"image":"assets/img/cpu.svg","description":"Rendimiento brutal en juegos y multitarea profesional."},
+    {"id":"cpu-i9","name":"Intel Core i9-14900KS","category":"CPU","price":999,"image":"assets/img/cpu.svg","description":"Frecuencia máxima para cargas intensas y streaming."},
+    {"id":"ram-ddr5","name":"DDR5 64GB 7200 RGB","category":"RAM","price":469,"image":"assets/img/ram.svg","description":"Baja latencia y alta estabilidad para creadores."},
+    {"id":"mb-x670e","name":"X670E Extreme","category":"Motherboard","price":899,"image":"assets/img/motherboard.svg","description":"VRM robusto, PCIe 5.0, conectividad premium."},
+    {"id":"ssd-4tb","name":"NVMe 4TB Gen4","category":"Storage","price":449,"image":"assets/img/storage.svg","description":"Cargas instantáneas para juegos y edición 8K."},
+    {"id":"cool-360","name":"AIO 360 RGB Elite","category":"Cooling","price":349,"image":"assets/img/cooling.svg","description":"Control térmico silencioso para CPUs tope."},
+    {"id":"psu-1300","name":"PSU 1300W Titanium","category":"PSU","price":529,"image":"assets/img/psu.svg","description":"Eficiencia máxima y entrega eléctrica estable."},
+    {"id":"monitor-oled","name":"OLED 32 4K 240Hz","category":"Monitor","price":1999,"image":"assets/img/monitor.svg","description":"Color de referencia y respuesta instantánea."},
+    {"id":"keyboard-he","name":"Teclado Hall Effect Pro","category":"Periféricos","price":329,"image":"assets/img/keyboard.svg","description":"Rapid trigger real para juego competitivo."},
+    {"id":"mouse-8k","name":"Mouse Wireless 8K","category":"Periféricos","price":219,"image":"assets/img/mouse.svg","description":"Ultraligero con precisión profesional."}
+  ],
+  "builds": [
+    {"name":"Starter 1080p","price":"USD 1,499","parts":"Ryzen 5 + RTX 4060 + 16GB + NVMe 1TB"},
+    {"name":"Pro 1440p","price":"USD 2,499","parts":"Ryzen 7 + RTX 4070 Ti + 32GB + NVMe 2TB"},
+    {"name":"Creator 4K","price":"USD 4,999","parts":"Ryzen 9 + RTX 4090 + 64GB + NVMe 4TB"}
+  ],
+  "banks": [
+    {"bank":"Galicia","installments":"6 / 12","benefit":"20% OFF"},
+    {"bank":"BBVA","installments":"3 / 6 / 12","benefit":"Sin interés viernes"},
+    {"bank":"Santander","installments":"6 / 9","benefit":"15% reintegro"},
+    {"bank":"Provincia","installments":"12 / 18","benefit":"Plan gamer"}
+  ]
+}
