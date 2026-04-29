@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SportHub Elite v3</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="logo">SportHub <span>Elite</span></div>
+    <input id="search" placeholder="Buscar productos..." />
+    <select id="filterCat"></select>
+    <button id="openCart">Carrito <b id="cartQty">0</b></button>
+  </header>
+
+  <section class="hero reveal"><h1>Ecommerce Deportivo Premium</h1><p>UI renovada, datos curados y lógica robusta.</p></section>
+
+  <main>
+    <section class="toolbar reveal">
+      <label><input type="checkbox" id="onlyDeals"> Solo ofertas</label>
+      <input id="couponInput" placeholder="Cupón" />
+      <button id="applyCoupon">Aplicar cupón</button>
+      <span id="couponMsg"></span>
+    </section>
+
+    <section id="catalog" class="catalog"></section>
+    <section id="adminRoot" class="panel reveal"></section>
+  </main>
+
+  <aside id="cart" class="cart"><h3>Tu carrito</h3><div id="cartList"></div><p id="cartTotal"></p><a id="waLink" target="_blank">Finalizar por WhatsApp</a></aside>
+
+  <footer class="footer">
+    <article><h4>Quiénes somos</h4><p>Tienda premium de indumentaria y fútbol en Santa Fe.</p></article>
+    <article><h4>Ubicación</h4><p>Av. General López 2450 · Santa Fe</p><p>Lunes a Sábado 9 a 18</p></article>
+    <article><h4>Contacto</h4><p>+54 342 555-0198</p><p>ventas@sporthubelite.com</p></article>
+    <iframe src="https://www.google.com/maps?q=Santa+Fe+Argentina&output=embed" loading="lazy"></iframe>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="auth.js"></script>
+  <script src="discounts.js"></script>
+  <script src="coupons.js"></script>
+  <script src="cart.js"></script>
+  <script src="wishlist.js"></script>
+  <script src="analytics.js"></script>
+  <script src="admin.js"></script>
+  <script src="ui-effects.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
