@@ -1,5 +1,5 @@
 // Catálogo estricto por categoría + imagen coherente.
-const PRODUCTS = [
+const products = [
   {id:'cam-1',name:'Camiseta River Plate Titular 24/25',team:'River',category:'camisetas',price:129999,image:'https://images.unsplash.com/photo-1589487391730-58f20eb2c308?auto=format&fit=crop&w=1200&q=80',description:'Original, slim fit y tela respirable.'},
   {id:'cam-2',name:'Camiseta Boca Juniors Titular 24/25',team:'Boca',category:'camisetas',price:129999,image:'https://images.unsplash.com/photo-1578926375605-eaf7559b1458?auto=format&fit=crop&w=1200&q=80',description:'Modelo oficial con escudo bordado.'},
   {id:'cam-3',name:'Camiseta Selección Argentina Titular',team:'Argentina',category:'camisetas',price:139999,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80',description:'Versión fan con tecnología dry-fit.'},
