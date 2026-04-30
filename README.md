@@ -1,16 +1,15 @@
-## Hi there 👋
+# Turbo Ruta 3D
 
-<!--
-**geronimo12-prog/geronimo12-prog** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Juego de autos en **Canvas** con sensación pseudo-3D, curvas dinámicas, tráfico con movimiento, nitro, partículas de choque y HUD en tiempo real.
 
-Here are some ideas to get you started:
+## Controles
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- **A / D** o **⬅️ / ➡️**: girar.
+- **W / S** o **⬆️ / ⬇️**: acelerar / frenar.
+- **ESPACIO**: nitro.
+- **R**: reiniciar después de un choque.
+
+## Cómo ejecutarlo
+
+1. Abre `index.html` directamente en el navegador, o
+2. levanta un servidor local (por ejemplo `python3 -m http.server`) y entra a `http://localhost:8000`.

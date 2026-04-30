@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turbo Ruta 3D</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: radial-gradient(circle at 20% 10%, #243447, #0b1016 55%);
+      color: #e6f1ff;
+    }
+    .wrap {
+      width: min(100vw, 980px);
+      padding: 1rem;
+    }
+    h1 {
+      margin: 0 0 .5rem;
+      letter-spacing: .04em;
+      text-shadow: 0 0 12px rgba(0,180,255,.35);
+    }
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(110px, 1fr));
+      gap: .7rem;
+      margin-bottom: .8rem;
+    }
+    .card {
+      padding: .55rem .8rem;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 12px;
+      background: rgba(8,20,35,.55);
+      backdrop-filter: blur(4px);
+    }
+    .k { opacity: .75; font-size: .8rem; }
+    .v { font-size: 1.15rem; font-weight: 700; }
+    canvas {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      display: block;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,.25);
+      box-shadow: 0 16px 44px rgba(0,0,0,.5);
+      background: #0b1a2a;
+    }
+    .help { opacity: .82; margin: .6rem .2rem 0; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>🏎️ Turbo Ruta 3D</h1>
+    <section class="hud">
+      <div class="card"><div class="k">Puntaje</div><div class="v" id="score">0</div></div>
+      <div class="card"><div class="k">Récord</div><div class="v" id="best">0</div></div>
+      <div class="card"><div class="k">Velocidad</div><div class="v" id="speed">0 km/h</div></div>
+      <div class="card"><div class="k">Estado</div><div class="v" id="state">Corriendo</div></div>
+    </section>
+    <canvas id="game" width="1280" height="720" aria-label="Juego de carrera"></canvas>
+    <p class="help">A/D o ⬅️/➡️ para girar • W/S o ⬆️/⬇️ para acelerar/frenar • ESPACIO para nitro • R reinicia.</p>
+  </main>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const bestEl = document.getElementById('best');
+  const speedEl = document.getElementById('speed');
+  const stateEl = document.getElementById('state');
+
+  const W = canvas.width;
+  const H = canvas.height;
+  const horizon = H * 0.36;
+
+  const keys = new Set();
+  const player = {
+    x: 0,
+    targetX: 0,
+    speed: 170,
+    maxSpeed: 360,
+    accel: 140,
+    brake: 220,
+    turnSpeed: 2.8,
+    nitro: 0,
+    alive: true
+  };
+
+  const world = {
+    distance: 0,
+    curve: 0,
+    curveTarget: 0,
+    curveTimer: 0,
+    score: 0,
+    best: Number(localStorage.getItem('turbo_best') || 0),
+    traffic: [],
+    sparks: [],
+    shake: 0,
+    t: 0
+  };
+  bestEl.textContent = world.best;
+
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  function spawnCar() {
+    world.traffic.push({
+      z: rand(0.9, 1.25),
+      lane: Math.round(rand(-1, 1)),
+      wobble: rand(-0.15, 0.15),
+      color: `hsl(${Math.floor(rand(0, 360))} 90% 60%)`,
+      speedFactor: rand(0.45, 0.85),
+      blink: Math.random() < 0.35
+    });
+  }
+
+  for (let i = 0; i < 10; i++) spawnCar();
+
+  function project(x, z) {
+    const scale = 1 / Math.max(0.18, z);
+    const roadHalf = (W * 0.42) * scale;
+    const y = horizon + (H - horizon) * (1 - scale * 0.85);
+    const screenX = W / 2 + x * roadHalf;
+    return { x: screenX, y, scale, roadHalf };
+  }
+
+  function drawBackground() {
+    const sky = ctx.createLinearGradient(0, 0, 0, horizon);
+    sky.addColorStop(0, '#4db3ff');
+    sky.addColorStop(0.45, '#63c5ff');
+    sky.addColorStop(1, '#f9a15b');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, horizon);
+
+    ctx.fillStyle = '#17371f';
+    ctx.fillRect(0, horizon, W, H - horizon);
+
+    for (let i = 0; i < 5; i++) {
+      const y = horizon + i * 20;
+      ctx.fillStyle = `rgba(255,255,255,${0.04 - i * 0.006})`;
+      ctx.fillRect(0, y, W, 2);
+    }
+  }
+
+  function drawRoad(dt) {
+    world.curveTimer -= dt;
+    if (world.curveTimer <= 0) {
+      world.curveTarget = rand(-0.9, 0.9);
+      world.curveTimer = rand(1.8, 4.2);
+    }
+    world.curve += (world.curveTarget - world.curve) * dt * 0.5;
+
+    for (let i = 140; i >= 1; i--) {
+      const z1 = i / 140;
+      const z2 = (i - 1) / 140;
+      const p1 = project(world.curve * z1 * 1.1, z1);
+      const p2 = project(world.curve * z2 * 1.1, z2);
+
+      const grassColor = i % 2 ? '#215a2f' : '#286838';
+      ctx.fillStyle = grassColor;
+      ctx.fillRect(0, p2.y, W, p1.y - p2.y + 1);
+
+      const roadColor = i % 2 ? '#33353a' : '#2c2e33';
+      ctx.fillStyle = roadColor;
+      ctx.beginPath();
+      ctx.moveTo(p1.x - p1.roadHalf, p1.y);
+      ctx.lineTo(p1.x + p1.roadHalf, p1.y);
+      ctx.lineTo(p2.x + p2.roadHalf, p2.y);
+      ctx.lineTo(p2.x - p2.roadHalf, p2.y);
+      ctx.closePath();
+      ctx.fill();
+
+      if (i % 7 === 0) {
+        ctx.fillStyle = '#f8f8f8';
+        const w1 = p1.roadHalf * 0.05;
+        const w2 = p2.roadHalf * 0.05;
+        ctx.beginPath();
+        ctx.moveTo(p1.x - w1, p1.y);
+        ctx.lineTo(p1.x + w1, p1.y);
+        ctx.lineTo(p2.x + w2, p2.y);
+        ctx.lineTo(p2.x - w2, p2.y);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+  }
+
+  function carScreenPosition(car) {
+    const z = car.z;
+    const laneOffset = car.lane * 0.58 + car.wobble;
+    const p = project(world.curve * z * 1.15 + laneOffset - player.x, z);
+    return { ...p, width: 120 * p.scale, height: 190 * p.scale };
+  }
+
+  function drawOpponent(car) {
+    const p = carScreenPosition(car);
+    if (p.y < horizon - 20 || p.y > H + 100) return;
+
+    ctx.fillStyle = car.color;
+    ctx.fillRect(p.x - p.width / 2, p.y - p.height, p.width, p.height);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(p.x - p.width * 0.34, p.y - p.height * 0.78, p.width * 0.68, p.height * 0.24);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(p.x - p.width * 0.45, p.y - p.height * 0.12, p.width * 0.28, p.height * 0.08);
+    ctx.fillRect(p.x + p.width * 0.17, p.y - p.height * 0.12, p.width * 0.28, p.height * 0.08);
+
+    if (car.blink && Math.sin(world.t * 10) > 0) {
+      ctx.fillStyle = '#ffd659';
+      ctx.fillRect(p.x - p.width * 0.45, p.y - p.height * 0.26, p.width * 0.08, p.height * 0.07);
+      ctx.fillRect(p.x + p.width * 0.37, p.y - p.height * 0.26, p.width * 0.08, p.height * 0.07);
+    }
+  }
+
+  function drawPlayer() {
+    const y = H - 105 + Math.sin(world.t * 18) * 2;
+    const x = W / 2 + player.x * 225;
+    const w = 145;
+    const h = 220;
+    ctx.fillStyle = '#0fd3ff';
+    ctx.fillRect(x - w / 2, y - h, w, h);
+    ctx.fillStyle = '#071018';
+    ctx.fillRect(x - w * 0.33, y - h * 0.78, w * 0.66, h * 0.22);
+    ctx.fillStyle = '#101010';
+    ctx.fillRect(x - w * 0.46, y - h * 0.13, w * 0.3, h * 0.09);
+    ctx.fillRect(x + w * 0.16, y - h * 0.13, w * 0.3, h * 0.09);
+
+    if (keys.has('Space')) {
+      ctx.fillStyle = '#ff8f2a';
+      ctx.fillRect(x - 14, y - 2, 10, 30 + Math.random() * 12);
+      ctx.fillRect(x + 4, y - 2, 10, 30 + Math.random() * 12);
+    }
+  }
+
+  function checkCollision(car) {
+    const p = carScreenPosition(car);
+    const playerX = W / 2 + player.x * 225;
+    const playerY = H - 105;
+    return (
+      p.y > H - 230 &&
+      Math.abs(p.x - playerX) < 68 &&
+      Math.abs((p.y - p.height * 0.4) - (playerY - 110)) < 78
+    );
+  }
+
+  function explode() {
+    world.shake = 22;
+    for (let i = 0; i < 70; i++) {
+      world.sparks.push({
+        x: W / 2 + player.x * 225,
+        y: H - 170,
+        vx: rand(-280, 280),
+        vy: rand(-310, 120),
+        life: rand(0.35, 1.1),
+        t: 0,
+        c: `hsl(${rand(15, 65)} 100% 60%)`
+      });
+    }
+  }
+
+  function update(dt) {
+    world.t += dt;
+    if (!player.alive) {
+      stateEl.textContent = 'Choque — presiona R';
+      return;
+    }
+
+    const turning = (keys.has('ArrowLeft') || keys.has('KeyA') ? -1 : 0) +
+                    (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0);
+    player.targetX += turning * player.turnSpeed * dt;
+    player.targetX = Math.max(-1.2, Math.min(1.2, player.targetX));
+    player.x += (player.targetX - player.x) * Math.min(1, dt * 8);
+
+    if (keys.has('ArrowUp') || keys.has('KeyW')) player.speed += player.accel * dt;
+    if (keys.has('ArrowDown') || keys.has('KeyS')) player.speed -= player.brake * dt;
+    player.speed -= 18 * dt;
+
+    if (keys.has('Space')) player.nitro = Math.min(2.8, player.nitro + dt * 0.6);
+    else player.nitro = Math.max(0, player.nitro - dt);
+
+    const nitroBoost = player.nitro > 0.2 ? 110 : 0;
+    player.speed = Math.max(80, Math.min(player.maxSpeed + nitroBoost, player.speed));
+
+    world.distance += player.speed * dt;
+    world.score += Math.floor(player.speed * dt * 0.7);
+
+    speedEl.textContent = `${Math.floor(player.speed)} km/h`;
+    scoreEl.textContent = world.score;
+    stateEl.textContent = player.nitro > 0.2 ? 'NITRO' : 'Corriendo';
+
+    for (const car of world.traffic) {
+      car.z -= dt * ((player.speed * 0.0018) - (car.speedFactor * 0.16));
+      car.wobble += Math.sin(world.t * (1.6 + car.speedFactor)) * dt * 0.02;
+
+      if (checkCollision(car)) {
+        player.alive = false;
+        explode();
+        if (world.score > world.best) {
+          world.best = world.score;
+          bestEl.textContent = world.best;
+          localStorage.setItem('turbo_best', String(world.best));
+        }
+      }
+
+      if (car.z < 0.17 || car.z > 1.4) {
+        car.z = rand(0.9, 1.25);
+        car.lane = Math.round(rand(-1, 1));
+        car.color = `hsl(${Math.floor(rand(0, 360))} 90% 60%)`;
+      }
+    }
+
+    for (const s of world.sparks) {
+      s.t += dt;
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      s.vy += 520 * dt;
+    }
+    world.sparks = world.sparks.filter(s => s.t < s.life);
+  }
+
+  function drawSparks() {
+    for (const s of world.sparks) {
+      const a = 1 - s.t / s.life;
+      ctx.fillStyle = s.c.replace(')', ` / ${a})`).replace('hsl', 'hsl');
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 2 + a * 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function restart() {
+    player.x = 0; player.targetX = 0; player.speed = 170; player.nitro = 0; player.alive = true;
+    world.score = 0; world.distance = 0; world.traffic.length = 0; world.sparks.length = 0;
+    world.curve = 0; world.curveTarget = 0; world.curveTimer = 0; world.shake = 0;
+    for (let i = 0; i < 10; i++) spawnCar();
+  }
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+
+    const shake = world.shake;
+    world.shake = Math.max(0, world.shake - dt * 26);
+
+    ctx.save();
+    if (shake > 0) ctx.translate(rand(-shake, shake), rand(-shake, shake));
+
+    drawBackground();
+    drawRoad(dt);
+    world.traffic.sort((a, b) => b.z - a.z).forEach(drawOpponent);
+    drawPlayer();
+    drawSparks();
+
+    ctx.restore();
+    requestAnimationFrame(loop);
+  }
+
+  addEventListener('keydown', (e) => {
+    if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(e.code)) e.preventDefault();
+    keys.add(e.code);
+    if (e.code === 'KeyR') restart();
+  }, { passive: false });
+  addEventListener('keyup', (e) => keys.delete(e.code));
+
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
