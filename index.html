@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juego de Autos</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      background: linear-gradient(#141414, #1f1f1f);
+      color: #fff;
+    }
+    .container { text-align: center; }
+    canvas {
+      border: 3px solid #fff;
+      border-radius: 8px;
+      background: #2f2f2f;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.6rem auto;
+      width: 420px;
+      font-weight: bold;
+    }
+    .tip { opacity: 0.8; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏁 Juego de Autos</h1>
+    <div class="hud">
+      <div>Puntaje: <span id="score">0</span></div>
+      <div>Récord: <span id="best">0</span></div>
+    </div>
+    <canvas id="game" width="420" height="600"></canvas>
+    <p class="tip">Usa ⬅️ ➡️ para moverte. Esquiva los autos enemigos.</p>
+    <p class="tip" id="status"></p>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    const statusEl = document.getElementById('status');
+
+    const laneCount = 3;
+    const laneWidth = canvas.width / laneCount;
+    let keys = { left: false, right: false };
+
+    const player = {
+      lane: 1,
+      width: 58,
+      height: 100,
+      y: canvas.height - 120,
+      color: '#00d4ff',
+    };
+
+    let enemies = [];
+    let enemySpeed = 3;
+    let spawnTimer = 0;
+    let score = 0;
+    let gameOver = false;
+    let best = Number(localStorage.getItem('best_score_autos') || 0);
+    bestEl.textContent = best;
+
+    function laneX(lane, carWidth) {
+      return lane * laneWidth + (laneWidth - carWidth) / 2;
+    }
+
+    function drawRoad() {
+      ctx.fillStyle = '#3a3a3a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#f8f8f8';
+      const dashH = 32;
+      for (let lane = 1; lane < laneCount; lane++) {
+        const x = lane * laneWidth - 3;
+        for (let y = -dashH; y < canvas.height; y += dashH * 2) {
+          ctx.fillRect(x, (y + (score % (dashH * 2))), 6, dashH);
+        }
+      }
+    }
+
+    function drawCar(x, y, width, height, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, width, height);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(x + 8, y + 10, width - 16, 22);
+      ctx.fillRect(x + 8, y + height - 30, width - 16, 20);
+      ctx.fillStyle = '#ffcc00';
+      ctx.fillRect(x + 5, y + height - 12, 12, 8);
+      ctx.fillRect(x + width - 17, y + height - 12, 12, 8);
+    }
+
+    function spawnEnemy() {
+      const lane = Math.floor(Math.random() * laneCount);
+      enemies.push({
+        lane,
+        width: 58,
+        height: 100,
+        y: -120,
+        color: '#ff5e5e',
+      });
+    }
+
+    function collides(a, b) {
+      return (
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
+      );
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      if (keys.left) player.lane = Math.max(0, player.lane - 1);
+      if (keys.right) player.lane = Math.min(laneCount - 1, player.lane + 1);
+      keys.left = keys.right = false;
+
+      spawnTimer++;
+      if (spawnTimer > 40) {
+        spawnEnemy();
+        spawnTimer = 0;
+      }
+
+      enemySpeed += 0.0008;
+      score += 1;
+      scoreEl.textContent = score;
+
+      const playerRect = {
+        x: laneX(player.lane, player.width),
+        y: player.y,
+        width: player.width,
+        height: player.height,
+      };
+
+      enemies.forEach(enemy => {
+        enemy.y += enemySpeed;
+      });
+
+      enemies = enemies.filter(enemy => enemy.y < canvas.height + 120);
+
+      for (const enemy of enemies) {
+        const enemyRect = {
+          x: laneX(enemy.lane, enemy.width),
+          y: enemy.y,
+          width: enemy.width,
+          height: enemy.height,
+        };
+        if (collides(playerRect, enemyRect)) {
+          endGame();
+          break;
+        }
+      }
+    }
+
+    function draw() {
+      drawRoad();
+      drawCar(laneX(player.lane, player.width), player.y, player.width, player.height, player.color);
+      enemies.forEach(enemy => {
+        drawCar(laneX(enemy.lane, enemy.width), enemy.y, enemy.width, enemy.height, enemy.color);
+      });
+    }
+
+    function endGame() {
+      gameOver = true;
+      statusEl.textContent = '💥 ¡Perdiste! Presiona ESPACIO para reiniciar.';
+      if (score > best) {
+        best = score;
+        localStorage.setItem('best_score_autos', String(best));
+        bestEl.textContent = best;
+      }
+    }
+
+    function restart() {
+      enemies = [];
+      enemySpeed = 3;
+      spawnTimer = 0;
+      score = 0;
+      gameOver = false;
+      scoreEl.textContent = '0';
+      statusEl.textContent = '';
+      player.lane = 1;
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'ArrowLeft') keys.left = true;
+      if (e.code === 'ArrowRight') keys.right = true;
+      if (e.code === 'Space' && gameOver) restart();
+    });
+
+    loop();
+  </script>
+</body>
+</html>
